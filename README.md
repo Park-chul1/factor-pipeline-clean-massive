@@ -236,3 +236,66 @@ python tools/validate_outputs.py data/test_run_clean
 ```
 
 For a more realistic run, increase `--max-tickers` or remove it, and use `--min-names 30` or higher.
+
+
+## Mathematical Framework
+
+This project implements a cross-sectional factor model based on linear algebra and statistical estimation.
+
+### Linear Factor Model
+
+For each date t, we model stock returns as:
+
+r_t = X_t f_t + ε_t
+
+where:
+- r_t ∈ ℝ^N: forward returns across N stocks
+- X_t ∈ ℝ^{N×K}: factor exposure matrix
+- f_t ∈ ℝ^K: factor returns
+- ε_t: idiosyncratic noise
+
+### Ordinary Least Squares (OLS)
+
+Factor returns are estimated via:
+
+f_t = (X_tᵀ X_t)⁻¹ X_tᵀ r_t
+
+This corresponds to the least-squares solution minimizing:
+
+||r_t - X_t f_t||²
+
+### Projection Interpretation
+
+OLS can be interpreted geometrically as projecting r_t onto the column space of X_t:
+
+X_t f_t = Proj_{Col(X_t)}(r_t)
+
+The residual ε_t is orthogonal to the factor space:
+
+ε_t ⟂ Col(X_t)
+
+### Regularization (Ridge)
+
+To ensure numerical stability and mitigate multicollinearity:
+
+f_t = (X_tᵀ X_t + λI)⁻¹ X_tᵀ r_t
+
+### Cross-sectional Standardization
+
+Each factor is normalized per date:
+
+z = (x - μ) / σ
+
+This ensures comparability across factors and prevents scale dominance.
+
+### Information Coefficient (IC)
+
+We evaluate factor quality using cross-sectional correlation:
+
+IC_t = corr(X_{:,k}, r_t)
+
+Typically using Spearman rank correlation.
+
+---
+
+This framework connects linear algebra (projection, subspaces) with statistical learning (estimation, noise decomposition).

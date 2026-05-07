@@ -24,9 +24,6 @@ def build_price_volume_factors(panel: dict[str, pd.DataFrame]) -> dict[str, pd.D
     f: dict[str, pd.DataFrame] = {}
     for n in [1, 5, 10, 21, 63, 126, 252]:
         f[f"mom_{n}"] = _ret(close, n)
-    f["rev_1"] = -_ret(close, 1)
-    f["rev_5"] = -_ret(close, 5)
-    f["rev_21"] = -_ret(close, 21)
     for n in [10, 20, 63, 126]:
         f[f"volatility_{n}"] = lr.rolling(n, min_periods=max(3, n // 2)).std()
     f["parkinson_vol_20"] = (np.log(high / low) ** 2).rolling(20, min_periods=10).mean() / (4 * np.log(2))

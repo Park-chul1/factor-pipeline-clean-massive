@@ -25,6 +25,43 @@ def bars_long_to_panel(bars: pd.DataFrame, tickers: list[str] | None = None) -> 
     return panel
 
 
+def build_tradable_mask(
+    panel: dict[str, pd.DataFrame],
+    require_volume: bool = True,
+) -> pd.DataFrame:
+    """Return a date x ticker mask for names tradable on each date.
+
+    The mask is intentionally derived from the historical daily bars already
+    loaded into the pipeline, so it adds only one boolean T x N array and does
+    not require per-ticker state objects.
+    """
+    if "adj_close" in panel:
+        price = panel["adj_close"]
+    elif "close" in panel:
+        price = panel["close"]
+    else:
+        raise KeyError("panel must contain adj_close or close")
+
+    price_arr = price.to_numpy(dtype=float)
+    mask = pd.DataFrame(
+        np.isfinite(price_arr) & (price_arr > 0),
+        index=price.index,
+        columns=price.columns,
+    )
+
+    if require_volume and "volume" in panel:
+        volume = panel["volume"].reindex_like(price)
+        volume_arr = volume.to_numpy(dtype=float)
+        volume_mask = pd.DataFrame(
+            np.isfinite(volume_arr) & (volume_arr > 0),
+            index=price.index,
+            columns=price.columns,
+        )
+        mask &= volume_mask
+
+    return mask.astype(bool)
+
+
 def compute_forward_returns(adj_close: pd.DataFrame, horizon: int = 1) -> pd.DataFrame:
     return adj_close.shift(-horizon) / adj_close - 1.0
 

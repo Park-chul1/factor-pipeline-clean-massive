@@ -16,9 +16,13 @@ class PipelineConfig:
     min_names: int = 30
     ridge: float = 1e-4
     forward_horizon: int = 1
-    financial_timeframe: str = "ttm"
-    financial_limit: int = 50
+    financial_timeframe: str = "quarterly"
+    financial_limit: int = 100
+    financial_lookback_days: int = 550
     financial_lag_days: int = 60
+    ttm_min_quarters: int = 4
+    max_factor_corr: float = 0.999
+    corr_min_overlap: int = 100
     request_sleep_sec: float = 0.15
     use_cache: bool = True
 

@@ -1,7 +1,7 @@
 import pandas as pd
 
 from factor_pipeline.price_volume_factors import build_price_volume_factors
-from factor_pipeline.panel import compute_forward_returns
+from factor_pipeline.panel import build_tradable_mask, compute_forward_returns
 
 
 def test_price_volume_factor_names_exist():
@@ -12,6 +12,7 @@ def test_price_volume_factor_names_exist():
     assert "mom_252" in f
     assert "amihud_20" in f
     assert "dist_52w_high" in f
+    assert not any(name.startswith("rev_") for name in f)
 
 
 def test_forward_returns_are_future_returns():
@@ -21,3 +22,16 @@ def test_forward_returns_are_future_returns():
     assert abs(r.iloc[0, 0] - 0.10) < 1e-12
     assert abs(r.iloc[1, 0] - 0.10) < 1e-12
     assert pd.isna(r.iloc[2, 0])
+
+
+def test_build_tradable_mask_requires_positive_price_and_volume():
+    idx = pd.date_range("2024-01-01", periods=2, freq="B")
+    panel = {
+        "adj_close": pd.DataFrame({"A": [10.0, 11.0], "B": [5.0, None]}, index=idx),
+        "volume": pd.DataFrame({"A": [100.0, 0.0], "B": [50.0, 60.0]}, index=idx),
+    }
+
+    mask = build_tradable_mask(panel)
+
+    expected = pd.DataFrame({"A": [True, False], "B": [True, False]}, index=idx)
+    pd.testing.assert_frame_equal(mask, expected)

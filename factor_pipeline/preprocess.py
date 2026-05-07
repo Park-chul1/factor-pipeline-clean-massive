@@ -62,6 +62,8 @@ def preprocess_factor_dict(
     min_factor_coverage: float = 0.02,
     lower: float = 0.01,
     upper: float = 0.99,
+    max_factor_corr: float = 0.999,
+    corr_min_overlap: int = 100,
 ) -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
     """Preprocess all factors and drop unusable ones.
 
@@ -88,11 +90,91 @@ def preprocess_factor_dict(
             "processed_finite_ratio": finite_ratio,
             "finite_dates": finite_dates,
             "min_factor_coverage": min_factor_coverage,
+            "drop_reason": "" if kept else "low_coverage",
+            "corr_with": "",
+            "corr_value": np.nan,
+            "corr_overlap": 0,
         })
         if kept:
             processed[name] = z
-    diag = pd.DataFrame(rows).sort_values(["kept", "processed_finite_ratio", "factor"], ascending=[False, False, True])
+    diag = pd.DataFrame(rows)
+    processed, diag = drop_highly_correlated_factors(
+        processed,
+        diag,
+        threshold=max_factor_corr,
+        min_overlap=corr_min_overlap,
+    )
+    diag = diag.sort_values(["kept", "processed_finite_ratio", "factor"], ascending=[False, False, True])
     return processed, diag
+
+
+def _factor_corr(a: pd.DataFrame, b: pd.DataFrame, min_overlap: int) -> tuple[float, int]:
+    x = a.to_numpy(dtype=float).ravel()
+    y = b.to_numpy(dtype=float).ravel()
+    mask = np.isfinite(x) & np.isfinite(y)
+    overlap = int(mask.sum())
+    if overlap < min_overlap:
+        return np.nan, overlap
+    xv = x[mask]
+    yv = y[mask]
+    xsd = float(np.nanstd(xv))
+    ysd = float(np.nanstd(yv))
+    if xsd <= 1e-12 or ysd <= 1e-12:
+        return np.nan, overlap
+    return float(np.corrcoef(xv, yv)[0, 1]), overlap
+
+
+def drop_highly_correlated_factors(
+    processed: dict[str, pd.DataFrame],
+    diag: pd.DataFrame,
+    threshold: float = 0.999,
+    min_overlap: int = 100,
+) -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
+    """Drop later factors that are nearly duplicates of earlier kept factors."""
+    if not processed or threshold <= 0 or threshold > 1:
+        return processed, diag
+
+    kept: dict[str, pd.DataFrame] = {}
+    out = diag.copy()
+    for name, df in processed.items():
+        drop_info = None
+        for kept_name, kept_df in kept.items():
+            corr, overlap = _factor_corr(df, kept_df, min_overlap=min_overlap)
+            if np.isfinite(corr) and abs(corr) >= threshold:
+                drop_info = (kept_name, corr, overlap)
+                break
+
+        if drop_info is None:
+            kept[name] = df
+            continue
+
+        kept_name, corr, overlap = drop_info
+        row = out["factor"] == name
+        out.loc[row, "kept"] = False
+        out.loc[row, "drop_reason"] = "high_corr"
+        out.loc[row, "corr_with"] = kept_name
+        out.loc[row, "corr_value"] = corr
+        out.loc[row, "corr_overlap"] = overlap
+
+    return kept, out
+
+
+def apply_universe_mask(
+    factors: dict[str, pd.DataFrame],
+    universe_mask: pd.DataFrame | None,
+) -> dict[str, pd.DataFrame]:
+    if universe_mask is None:
+        return factors
+
+    masked: dict[str, pd.DataFrame] = {}
+    for name, raw in factors.items():
+        mask = universe_mask.reindex(
+            index=raw.index,
+            columns=raw.columns,
+            fill_value=False,
+        )
+        masked[name] = raw.where(mask)
+    return masked
 
 
 def build_exposure_tensor(
@@ -102,25 +184,34 @@ def build_exposure_tensor(
     fill_missing: bool = True,
     lower: float = 0.01,
     upper: float = 0.99,
+    universe_mask: pd.DataFrame | None = None,
+    max_factor_corr: float = 0.999,
+    corr_min_overlap: int = 100,
 ) -> tuple[np.ndarray, list[str], pd.DataFrame]:
     """Build X[T,N,K] from raw factor panels.
 
     Processing policy:
     1. raw factor values keep natural NaNs from insufficient history or missing
        financials;
-    2. each date/factor is winsorized cross-sectionally;
-    3. each date/factor is z-scored cross-sectionally;
-    4. sparse factors are dropped by processed finite coverage;
-    5. remaining NaNs are optionally filled with 0, the cross-sectional neutral
+    2. a date x ticker universe mask may remove non-tradable observations
+       before cross-sectional preprocessing;
+    3. each date/factor is winsorized cross-sectionally;
+    4. each date/factor is z-scored cross-sectionally;
+    5. sparse factors are dropped by processed finite coverage;
+    6. nearly duplicate factors are dropped by absolute correlation;
+    7. remaining NaNs are optionally filled with 0, the cross-sectional neutral
        exposure after z-scoring. This keeps regressions usable without leaking
        future data.
     """
+    factors = apply_universe_mask(factors, universe_mask)
     processed, diag = preprocess_factor_dict(
         factors,
         min_names=min_names,
         min_factor_coverage=min_factor_coverage,
         lower=lower,
         upper=upper,
+        max_factor_corr=max_factor_corr,
+        corr_min_overlap=corr_min_overlap,
     )
     names = list(processed.keys())
     if not names:

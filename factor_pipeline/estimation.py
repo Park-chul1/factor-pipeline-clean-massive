@@ -10,6 +10,7 @@ def estimate_factor_returns(
     min_names: int = 30,
     ridge: float = 1e-4,
     require_full_rank_without_ridge: bool = True,
+    universe_mask: np.ndarray | pd.DataFrame | None = None,
 ) -> np.ndarray:
     """Estimate daily cross-sectional factor returns.
 
@@ -18,6 +19,12 @@ def estimate_factor_returns(
     ridge == 0, require more observations than factors to avoid unstable OLS.
     """
     T, N, K = X.shape
+    mask_arr = None
+    if universe_mask is not None:
+        mask_arr = np.asarray(universe_mask, dtype=bool)
+        if mask_arr.shape != (T, N):
+            raise ValueError(f"universe_mask shape {mask_arr.shape} must equal {(T, N)}")
+
     f = np.full((T, K), np.nan, dtype=float)
     if K == 0:
         return f
@@ -26,6 +33,8 @@ def estimate_factor_returns(
         Xt = X[t]
         rt = r[t]
         mask = np.isfinite(rt) & np.any(np.isfinite(Xt), axis=1)
+        if mask_arr is not None:
+            mask &= mask_arr[t]
         n_obs = int(mask.sum())
         if ridge > 0:
             required = min_names

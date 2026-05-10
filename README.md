@@ -151,6 +151,8 @@ exchange=XNAS
 
 By default the runner requests `--ticker-status all`, so inactive metadata is included when the data vendor returns it. Use `--ticker-status active` only when you explicitly want active-only behavior.
 
+For a full NASDAQ backtest from 2023-01-01 to 2026-01-01, run with `--start 2023-01-01 --end 2026-01-01 --ticker-status all` and omit `--max-tickers` if you want the broadest universe. If you want a start-date style top-500 universe, use `--max-tickers 500 --universe-rank-by dollar_volume --universe-rank-anchor start`.
+
 The pipeline also saves `tradable_mask.npy`, a dense boolean `date x ticker` matrix derived from finite positive adjusted close and positive volume. This mask is applied before cross-sectional factor preprocessing and again during factor-return estimation, so dead/not-yet-listed/non-trading names do not enter z-scores or regressions.
 
 This is a practical starting point, but it is not yet a fully historical point-in-time exchange-membership universe. For production-grade research, add delisting-return handling and a vendor-backed historical membership filter.

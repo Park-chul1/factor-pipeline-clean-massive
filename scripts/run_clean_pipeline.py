@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import sys
 
@@ -32,17 +33,26 @@ def parse_args():
     p.add_argument("--universe-rank-by", default="dollar_volume", choices=["ticker", "dollar_volume"],
                    help="ticker = alphabetical; dollar_volume = top names by median close*volume")
     p.add_argument("--universe-rank-window-days", type=int, default=126,
-                   help="Use the last N trading days in the requested range to rank tickers by dollar volume")
+                   help="Use the first or last N trading days in the requested range to rank tickers by dollar volume")
+    p.add_argument("--universe-rank-anchor", default="end", choices=["start", "end"],
+                   help="Choose whether dollar-volume ranking is anchored at the range start or end")
     p.add_argument("--out-dir", default="data/processed_clean")
     p.add_argument("--cache-dir", default="data/cache_clean")
     p.add_argument("--api-cache-dir", default=None,
                    help="Raw API response cache directory; defaults to <cache-dir>/api_responses")
     p.add_argument("--min-names", type=int, default=30)
-    p.add_argument("--ridge", type=float, default=1e-4)
+    p.add_argument("--ridge", default="1e-4",
+                   help="Fixed ridge lambda, or 'auto' to select lambda date-by-date with GCV")
+    p.add_argument("--ridge-grid", default=None,
+                   help="Comma-separated lambda grid for --ridge auto, e.g. 1e-6,1e-5,1e-4,1e-3")
+    p.add_argument("--ridge-solver", default="qr", choices=["qr", "normal"],
+                   help="qr solves the augmented ridge least-squares system")
     p.add_argument("--horizon", type=int, default=1)
     p.add_argument("--financial-timeframe", default="quarterly", choices=["ttm", "quarterly", "annual"],
                    help="quarterly builds historical point-in-time TTM flows; ttm keeps vendor TTM rows")
     p.add_argument("--financial-limit", type=int, default=100)
+    p.add_argument("--financial-workers", type=int, default=1,
+                   help="Parallel workers for per-ticker financial downloads")
     p.add_argument("--financial-lookback-days", type=int, default=550,
                    help="Extra report-period history before --start used to seed quarterly TTM values")
     p.add_argument("--financial-lag-days", type=int, default=60, help="Used only when filing_date is missing")
@@ -96,6 +106,16 @@ def read_or_build(path: Path, use_cache: bool, builder):
     return df
 
 
+def parse_ridge(value: str) -> float | str:
+    return "auto" if str(value).lower() == "auto" else float(value)
+
+
+def parse_ridge_grid(value: str | None) -> list[float] | None:
+    if not value:
+        return None
+    return [float(x.strip()) for x in value.split(",") if x.strip()]
+
+
 def main():
     args = parse_args()
     out_dir = Path(args.out_dir); cache_dir = Path(args.cache_dir)
@@ -129,7 +149,10 @@ def main():
         rank_bars["date"] = pd.to_datetime(rank_bars["date"]).dt.normalize()
         rank_dates = sorted(rank_bars["date"].dropna().unique())
         if args.universe_rank_window_days and len(rank_dates) > args.universe_rank_window_days:
-            rank_dates = rank_dates[-args.universe_rank_window_days:]
+            if args.universe_rank_anchor == "start":
+                rank_dates = rank_dates[: args.universe_rank_window_days]
+            else:
+                rank_dates = rank_dates[-args.universe_rank_window_days:]
             rank_bars = rank_bars[rank_bars["date"].isin(rank_dates)].copy()
 
         rank_bars["dollar_volume"] = rank_bars["close"].astype(float) * rank_bars["volume"].astype(float)
@@ -160,24 +183,38 @@ def main():
         f"financials_{args.financial_timeframe}_{financial_report_start}_{args.end}_"
         f"{args.financial_limit}_{len(tickers)}.parquet"
     )
+    def fetch_financials_one(i: int, t: str) -> pd.DataFrame:
+        print(f"financials {i}/{len(tickers)} {t}", flush=True)
+        try:
+            return download_financials(
+                client,
+                t,
+                timeframe=args.financial_timeframe,
+                limit=args.financial_limit,
+                period_of_report_date_gte=financial_report_start,
+                period_of_report_date_lte=args.end,
+            )
+        except Exception as e:
+            print(f"WARN financials failed {t}: {e}", flush=True)
+            return pd.DataFrame()
+
     def build_financials():
         frames = []
-        for i, t in enumerate(tickers, 1):
-            print(f"financials {i}/{len(tickers)} {t}", flush=True)
-            try:
-                df = download_financials(
-                    client,
-                    t,
-                    timeframe=args.financial_timeframe,
-                    limit=args.financial_limit,
-                    period_of_report_date_gte=financial_report_start,
-                    period_of_report_date_lte=args.end,
-                )
-            except Exception as e:
-                print(f"WARN financials failed {t}: {e}", flush=True)
-                continue
-            if not df.empty:
-                frames.append(df)
+        if args.financial_workers <= 1:
+            for i, t in enumerate(tickers, 1):
+                df = fetch_financials_one(i, t)
+                if not df.empty:
+                    frames.append(df)
+        else:
+            with ThreadPoolExecutor(max_workers=args.financial_workers) as executor:
+                futures = [
+                    executor.submit(fetch_financials_one, i, t)
+                    for i, t in enumerate(tickers, 1)
+                ]
+                for future in as_completed(futures):
+                    df = future.result()
+                    if not df.empty:
+                        frames.append(df)
         return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
     fin_raw = read_or_build(fin_path, use_cache, build_financials)
     fin_flat = flatten_financials(fin_raw, lag_days=args.financial_lag_days) if not fin_raw.empty else pd.DataFrame()
@@ -205,7 +242,18 @@ def main():
     )
     r_df = compute_forward_returns(panel["adj_close"], horizon=args.horizon).where(tradable_mask_df)
     r = r_df.to_numpy(dtype=float)
-    f = estimate_factor_returns(X, r, min_names=args.min_names, ridge=args.ridge, universe_mask=tradable_mask)
+    ridge_value = parse_ridge(args.ridge)
+    f, ridge_diag = estimate_factor_returns(
+        X,
+        r,
+        min_names=args.min_names,
+        ridge=ridge_value,
+        universe_mask=tradable_mask,
+        ridge_grid=parse_ridge_grid(args.ridge_grid),
+        ridge_selection="gcv" if ridge_value == "auto" else "fixed",
+        solver=args.ridge_solver,
+        return_diagnostics=True,
+    )
 
     np.save(out_dir / "X.npy", X)
     np.save(out_dir / "r.npy", r)
@@ -216,6 +264,20 @@ def main():
     pd.DataFrame({"factor": factor_names}).to_csv(out_dir / "factor_names.csv", index=False)
     factor_diagnostics(factors).to_csv(out_dir / "factor_diagnostics_raw.csv", index=False)
     preprocess_diag.to_csv(out_dir / "factor_diagnostics_preprocessed.csv", index=False)
+    ridge_diag.insert(0, "date", dates.to_numpy())
+    ridge_diag.to_csv(out_dir / "ridge_diagnostics.csv", index=False)
+
+    selected = ridge_diag["selected_ridge"].replace([np.inf, -np.inf], np.nan).dropna()
+    ridge_summary = {
+        "mode": "gcv" if ridge_value == "auto" else "fixed",
+        "solver": args.ridge_solver,
+        "fixed_lambda": None if ridge_value == "auto" else float(ridge_value),
+        "grid": parse_ridge_grid(args.ridge_grid),
+        "finite_dates": int(selected.size),
+        "median_selected_lambda": float(selected.median()) if not selected.empty else None,
+        "min_selected_lambda": float(selected.min()) if not selected.empty else None,
+        "max_selected_lambda": float(selected.max()) if not selected.empty else None,
+    }
 
     summary = {
         "data_policy": {
@@ -240,6 +302,7 @@ def main():
         "X": array_summary("X", X),
         "r": array_summary("r", r),
         "factor_returns": array_summary("factor_returns", f),
+        "ridge": ridge_summary,
         "tradable_mask": {
             "shape": list(tradable_mask.shape),
             "true_count": int(tradable_mask.sum()),

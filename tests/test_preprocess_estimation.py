@@ -93,6 +93,29 @@ def test_ridge_estimation_works_when_factor_count_exceeds_names():
     assert np.isfinite(f).all()
 
 
+def test_auto_ridge_estimation_returns_diagnostics_with_qr_solver():
+    rng = np.random.default_rng(11)
+    T, N, K = 3, 20, 4
+    X = rng.normal(size=(T, N, K))
+    beta = rng.normal(size=K)
+    r = np.einsum("tnk,k->tn", X, beta) + rng.normal(scale=0.05, size=(T, N))
+
+    f, diag = estimate_factor_returns(
+        X,
+        r,
+        min_names=10,
+        ridge="auto",
+        ridge_grid=[1e-6, 1e-4, 1e-2],
+        solver="qr",
+        return_diagnostics=True,
+    )
+
+    assert f.shape == (T, K)
+    assert np.isfinite(f).all()
+    assert diag["selected_ridge"].isin([1e-6, 1e-4, 1e-2]).all()
+    assert (diag["n_observations"] == N).all()
+
+
 def test_estimation_respects_universe_mask():
     X = np.ones((1, 3, 1), dtype=float)
     r = np.array([[0.01, 0.02, 0.03]], dtype=float)

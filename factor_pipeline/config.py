@@ -18,6 +18,7 @@ class PipelineConfig:
     forward_horizon: int = 1
     financial_timeframe: str = "quarterly"
     financial_limit: int = 100
+    financial_workers: int = 1
     financial_lookback_days: int = 550
     financial_lag_days: int = 60
     ttm_min_quarters: int = 4

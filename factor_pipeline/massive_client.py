@@ -23,6 +23,8 @@ class MassiveClient:
     cache_dir: Path | str | None = None
     use_cache: bool = True
     cache_namespace: str = "api_responses"
+    max_retries: int = 3
+    retry_sleep_sec: float = 1.0
 
     def __post_init__(self) -> None:
         if self.cache_dir is not None:
@@ -75,9 +77,24 @@ class MassiveClient:
         if cached is not None:
             return cached
 
-        r = requests.get(url, params=params, timeout=self.timeout)
-        if self.sleep_sec:
-            time.sleep(self.sleep_sec)
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                r = requests.get(url, params=params, timeout=self.timeout)
+                if self.sleep_sec:
+                    time.sleep(self.sleep_sec)
+                if r.status_code == 200:
+                    break
+                if r.status_code not in {429, 500, 502, 503, 504}:
+                    raise RuntimeError(f"Massive API error {r.status_code}: {r.text[:1000]}")
+                last_error = RuntimeError(f"Massive API error {r.status_code}: {r.text[:1000]}")
+            except requests.RequestException as e:
+                last_error = e
+            if attempt < self.max_retries:
+                time.sleep(self.retry_sleep_sec * (attempt + 1))
+        else:
+            raise RuntimeError(f"Massive API request failed after retries: {last_error}")
+
         if r.status_code != 200:
             raise RuntimeError(f"Massive API error {r.status_code}: {r.text[:1000]}")
         data = r.json()

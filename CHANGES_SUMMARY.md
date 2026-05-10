@@ -1,45 +1,21 @@
-# 작업 요약 (2026-05-10)
+# 변경 사항 (2026-05-10)
 
-## ✅ 완료된 작업
+## 🎯 추가된 핵심 기능
 
-### 1. 백테스트 프레임워크 완성
-- **`factor_pipeline/backtest.py`** (NEW): 장기-단기 백테스트 엔진
-  - `run_factor_backtest()`: 요인 백테스트 실행
-  - 매일 리밸런싱, 거래량, 샤프 비율 등 메트릭 계산
-  
-- **`factor_pipeline/signals.py`** (NEW): 신호 생성 함수
-  - `predict_factor_returns()`: latest/rolling/ewma/zero/oracle 메서드
-  - `make_scores()`: 요인 노출과 예측 반환의 곱
-  - `make_quantile_long_short_weights()`: 분위수 기반 포지션 가중치
+### 백테스트 프레임워크
+- `factor_pipeline/backtest.py`: 일일 리밸런싱 백테스트 엔진
+- `factor_pipeline/signals.py`: 요인 수익률 예측 (latest/rolling/ewma/oracle)
+- `scripts/run_backtest.py`: 배치 백테스트 실행
 
-### 2. 백테스트 스크립트
-- **`scripts/run_backtest.py`** (NEW): 저장된 파이프라인으로 백테스트 실행
-  - 다양한 방법(ewma/rolling/latest) 지원
-  - 결과를 CSV/JSON으로 저장
+### IBKR 라이브 트레이딩
+- `scripts/ibkr_live_portfolio.py`: 실시간 포트폴리오 리밸런싱 (위험 한도 포함)
+- `scripts/ibkr_live_trader.py`: IBKR 가격 조회 및 주문
+- `scripts/connect_ibkr_demo.py`: 연결 진단
 
-### 3. IBKR 라이브 트레이딩
-- **`scripts/ibkr_live_portfolio.py`** (NEW): 실시간 포트폴리오 리밸런싱
-  - 파이프라인 출력 자동 로딩 (weights.npy 없어도 X.npy/factor_returns.npy에서 계산 가능)
-  - 위험 한도: 종목당 최대 2%, 롱/숏 최대 60%
-  - Snapshot 모드로 빠른 가격 수집
-  - Market Data Type 선택 (1:realtime, 3:delayed)
-  
-- **`scripts/ibkr_live_trader.py`** (NEW): IBKR 라이브 트레이딩 헬퍼
-  - 가격 조회 및 샘플 주문
-  
-- **`scripts/connect_ibkr_demo.py`** (NEW): IBKR 데모 연결 테스트
-
-### 4. 코어 모듈 개선
-- **`factor_pipeline/estimation.py`**: 요인 반환 추정 로직 개선
-- **`scripts/run_clean_pipeline.py`**: 우주 선택 개선 (start/end anchor ranking)
-- **`factor_pipeline/massive_client.py`**: 클라이언트 개선
-- **`tests/test_preprocess_estimation.py`**: 테스트 추가
-- **`requirements.txt`**: `ib_insync>=1.0` 추가
-
-### 5. 데이터
-- 2023-01-01 ~ 2026-03-01 NASDAQ 풀 우주로 백테스트 완료
-  - Sharpe: ~4.88 (ewma, q=0.1, lookback=120)
-  - 생존자 편향 제거됨 (tradable_mask 사용)
+### 개선사항
+- `run_clean_pipeline.py`: 우주 선택 개선 (start/end anchor ranking)
+- `estimation.py`: 요인 반환 추정 개선
+- `requirements.txt`: ib_insync 추가
 
 ---
 

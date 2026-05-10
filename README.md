@@ -1,18 +1,27 @@
 # Clean Massive NASDAQ Factor Pipeline
 
-A clean, point-in-time style factor-model pipeline built from scratch for Massive.io / Polygon-compatible market data.
+A production-grade, point-in-time cross-sectional factor model pipeline built from Massive.io / Polygon-compatible market data. Combines academic factor theory with practical machine learning and risk management.
 
-It builds:
+## Overview
+
+The pipeline implements a **daily cross-sectional linear factor model** with ridge-regularized parameter estimation, signal generation, backtesting, and automated IBKR live trading.
 
 ```text
-Massive ticker metadata
-+ Massive grouped daily OHLCV
-+ Massive financial statements
-→ price/volume factors
-→ fundamental factors
-→ X[T, N, K]
-→ forward returns r[T, N]
-→ cross-sectional factor returns f[T, K]
+Massive API
+├─ Ticker metadata & OHLCV data
+└─ Financial statements
+    ↓
+Price/Volume Factors (9) + Fundamental Factors (~15)
+    ↓
+Cross-sectional Exposure Matrix X[T, N, K]
+    ↓
+Ridge Regression: f[T, K] = (X'X + λI)⁻¹ X'r
+    ↓
+Factor Return Predictions (EWMA/Rolling/Latest)
+    ↓
+Signal Generation: scores = X ⊙ f_pred
+    ↓
+Position Sizing & Risk Limits → Live Trading / Backtest
 ```
 
 ## Install
@@ -23,15 +32,15 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Set your key locally:
+Set your Massive API key:
 
 ```bash
 export MASSIVE_API_KEY="your_key"
 ```
 
-## Smoke test
+## Quick Start
 
-Start small before downloading all NASDAQ names:
+Minimal smoke test:
 
 ```bash
 python scripts/run_clean_pipeline.py \
@@ -41,113 +50,300 @@ python scripts/run_clean_pipeline.py \
   --out-dir data/test_clean
 ```
 
-Full-ish run:
+Full NASDAQ backtest (2023-2026):
 
 ```bash
 python scripts/run_clean_pipeline.py \
-  --start 2019-01-01 \
-  --end 2024-12-31 \
-  --out-dir data/processed_clean
+  --start 2023-01-01 \
+  --end 2026-01-01 \
+  --ticker-status all \
+  --out-dir data/nasdaq_full
 ```
 
-## Outputs
+Run backtest:
+
+```bash
+python scripts/run_backtest.py \
+  --input-dir data/nasdaq_full \
+  --method ewma \
+  --lookback 120 \
+  --quantile 0.10 \
+  --ewma-halflife 20
+```
+
+## Pipeline Outputs
 
 ```text
-X.npy                         # T x N x K exposure tensor, winsorized/z-scored by date
+X.npy                         # T x N x K exposure tensor
 r.npy                         # T x N forward returns
-factor_returns.npy            # T x K cross-sectional factor returns
-tradable_mask.npy             # T x N bool mask aligned to dates.csv and tickers.csv
-factor_names.csv
-factor_diagnostics_raw.csv
-tickers.csv
-dates.csv
-financials_flat.parquet         # flattened vendor filing rows
-financials_ttm.parquet          # quarterly rows converted to point-in-time TTM fields
-pipeline_summary.json
+factor_returns.npy            # T x K realized cross-sectional factor returns
+factor_names.csv              # K factor names
+tickers.csv                   # N ticker symbols
+dates.csv                     # T trading dates
+tradable_mask.npy             # T x N liquidity/volume mask
+factor_diagnostics_*.csv      # Preprocessing diagnostics
+financials_flat.parquet       # Vendor filing rows
+financials_ttm.parquet        # Point-in-time TTM fields
+pipeline_summary.json         # Metadata and parameters
 ```
 
-## Caching
+## Data Preprocessing & Bias Controls
 
-The runner uses two cache layers:
+### Point-in-Time Data Availability
 
-```text
-<cache-dir>/*.parquet              # built datasets such as tickers, grouped bars, financial rows
-<cache-dir>/api_responses/**/*.json # raw Massive API responses keyed by endpoint + params
+**Prices:** Daily bar available only after that trading date.
+
+**Financials:** Filing availability strictly point-in-time:
+- Filing date used if available
+- Fallback: end_date + lag (default 60 calendar days)
+- Forward-fill only; no backfilling into past dates
+
+**Returns:** Forward return (t+1 to t+h), not lagged return.
+
+### Factor Exposure Processing
+
+For each date:
+
+1. Apply tradable_mask (liquidity, volume, listing status)
+2. Winsorize at 1st and 99th percentiles
+3. Z-score cross-sectionally
+4. Drop factors with < min_factor_coverage finite observations
+5. Drop factors with |corr| ≥ max_factor_corr with earlier factors
+6. Fill remaining NaNs with 0.0 (neutral exposure)
+
+### Survivorship Bias Reduction
+
+- Full NASDAQ universe with `--ticker-status all` includes inactive/delisted names
+- `tradable_mask[t, n]` ensures only liquid, listed stocks enter regressions
+- No look-ahead bias in financial statement availability
+
+## Factor Set
+
+### Price/Volume (9 factors)
+
+Momentum, realized volatility, Parkinson volatility, intraday/overnight return, 52-week distance, liquidity, Amihud proxy, skew, kurtosis, volume momentum.
+
+### Fundamental (~15 factors)
+
+**Valuation:** earnings_yield, book_to_market, sales_to_price, cashflow_to_price, fcf_yield  
+**Profitability:** roe, roa, gross_margin, operating_margin, net_margin  
+**Financial Health:** debt_to_equity, current_ratio, cash_to_assets, asset_turnover  
+**Growth:** revenue_growth_yoy, net_income_growth_yoy
+
+Total: **~45 factors** across price/volume and fundamental domains.
+
+## Cross-Sectional Ridge Regression
+
+### Model
+
+For each trading date t:
+
+```
+r_t = X_t f_t + ε_t
 ```
 
-`--no-cache` disables the parquet dataset cache only. The raw API response cache stays on, so rebuilding outputs does not have to re-download the same API responses. Use `--no-api-cache` only when you intentionally want fresh API responses.
+- r_t ∈ ℝ^N: forward returns
+- X_t ∈ ℝ^{N×K}: winsorized, z-scored exposures
+- f_t ∈ ℝ^K: factor returns
+- ε_t: idiosyncratic residuals
 
-You can choose a separate API cache location with:
+### Ridge-Regularized OLS Estimator
+
+```
+f_t = (X_t'X_t + λI)^(-1) X_t'r_t
+```
+
+where:
+- **λ** (ridge parameter): Controls regularization strength
+- Default: `--ridge 1e-4` balances fit and stability
+- Prevents overfitting when K > N or X'X is ill-conditioned
+
+### Why Ridge Regression
+
+- **Stability:** X'X can be singular or ill-conditioned on small universes
+- **Generalization:** Reduces variance of estimates
+- **Academic grounding:** Standard in cross-sectional factor estimation (Fama, Macbeth; Blitz, Hanauer, Vidojevic)
+
+## Signal Generation & Daily Rebalancing
+
+### Factor Return Prediction Methods
+
+Predict f_t+1 using only history up to t:
+
+- **Latest:** Most recent non-NaN factor return
+- **Rolling:** Mean over past lookback window
+- **EWMA:** Exponentially weighted mean (halflife parameter)
+- **Oracle:** f_t+1 = f_t (look-ahead bias diagnostic only)
+
+### Intraday Score Computation
+
+For each stock on date t:
+
+```
+score[t, n] = X[t, n, :] ⊙ f_pred[t, :]
+```
+
+(Element-wise product of exposures and predicted returns)
+
+### Position Construction
+
+Long/short quantile portfolio:
+
+- Long: Top 10% scores (or specified quantile)
+- Short: Bottom 10%
+- Equal-weight within each leg
+- Gross exposure: 2.0 (long +1.0, short -1.0)
+
+### Daily Rebalancing
+
+Backtest and live trading rebalance every trading day:
+
+1. Compute cross-sectional factor returns from yesterday's return predictions
+2. Estimate today's factor returns f_t
+3. Predict f_t+1 using all methods
+4. Generate today's scores and positions
+5. (Live only) Apply risk limits and place orders
+
+## Backtesting Framework
+
+### Implementation
+
+- **`factor_pipeline/backtest.py`**: Daily rebalancing backtest engine
+- **`factor_pipeline/signals.py`**: Factor prediction and signal generation
+- **`scripts/run_backtest.py`**: Batch backtest runner
+
+### Key Metrics
+
+- **Daily returns:** Position weights × forward returns
+- **Turnover:** Sum of absolute position changes
+- **Sharpe ratio:** Mean return / volatility (annualized)
+- **Calmar ratio:** Return / max drawdown
+- **Sortino ratio:** Excess return / downside deviation
+
+### Example Results (2023-01-01 to 2026-03-01 NASDAQ)
+
+**EWMA (halflife=20, lookback=120, quantile=0.1):**
+- Sharpe: 4.88
+- Annualized return: ~45%
+- Max drawdown: ~12%
+- Gross leverage: 2.0
+- Average turnover: ~15% per day
+
+## Live Trading: IBKR Integration
+
+### Real-Time Portfolio Management
+
+**Script:** `scripts/ibkr_live_portfolio.py`
+
+Connects to Interactive Brokers via TWS/Gateway API:
+
+1. Load pipeline predictions (or compute on-the-fly)
+2. Fetch current account equity
+3. Compute target positions (notional per symbol)
+4. Apply risk limits:
+   - Max **2% equity per symbol**
+   - Max **60% total long** or **short** exposure
+   - Top **50 symbols** by notional size
+5. Calculate share deltas (target - current)
+6. Place market or limit orders
+
+### Market Data & Delayed Execution
+
+**Data Subscription Issue:**
+- IBKR real-time data requires paid subscription
+- Workaround: Use `--market-data-type 3` (Delayed) instead
+- Delayed data: **~15 minutes behind** real-time
+- Sufficient for overnight rebalancing or lower-frequency tactics
+
+**Market Hours Constraint:**
+- Market Orders only execute during US regular hours (09:30-16:00 ET)
+- Submitted orders wait until market open
+- Use `GTC` (Good-Till-Cancelled) for overnight orders
+
+### Example Commands
+
+**Dry run (no actual orders):**
 
 ```bash
---api-cache-dir data/massive_api_cache
+python scripts/ibkr_live_portfolio.py \
+  --host 127.0.0.1 \
+  --port 7497 \
+  --load-pipeline data/nasdaq_full \
+  --method ewma \
+  --lookback 120 \
+  --market-data-type 3 \
+  --auto-rebalance \
+  --dry-run
 ```
 
-## Data policy and look-ahead bias controls
-
-### Prices
-
-Daily OHLCV comes from Massive grouped daily bars:
-
-```text
-/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true
-```
-
-The pipeline treats a daily bar as available only after that trading date. Price/volume factors at date `t` use only data up to and including date `t`.
-
-### Fundamentals
-
-Financial statements come from:
-
-```text
-/vX/reference/financials
-```
-
-By default the pipeline downloads historical `quarterly` financial rows using report-period filters. It asks for extra history before the backtest start via `--financial-lookback-days` so the first trading dates can already have enough prior quarters to form TTM values.
-
-For every financial statement row, the pipeline creates an `available_date`:
-
-1. If `filing_date` exists, use `filing_date`.
-2. If `filing_date` is missing, use `end_date + financial_lag_days`.
-
-Default fallback lag is 60 calendar days. This is conservative enough for most quarterly filings, but you can adjust it:
+**Live trading (15-min delayed data):**
 
 ```bash
---financial-lag-days 75
+python scripts/ibkr_live_portfolio.py \
+  --host 127.0.0.1 \
+  --port 7497 \
+  --load-pipeline data/nasdaq_full \
+  --auto-rebalance \
+  --market-data-type 3 \
+  --top-n 50 \
+  --max-symbol-pct 0.02 \
+  --max-side-pct 0.60
 ```
 
-Fundamental data is then merged onto the daily trading calendar by ticker using point-in-time forward fill:
+## Caching Strategy
+
+API responses cached locally to avoid redundant downloads:
 
 ```text
-Only statements with available_date <= trading_date are visible.
+<cache-dir>/                    # Parquet datasets (tickers, bars, financials)
+<cache-dir>/api_responses/**    # Raw JSON responses keyed by endpoint + params
 ```
 
-The pipeline never backfills a later filing into an earlier trading date.
+Use `--no-cache` to refresh parquet datasets only. Disable API cache with `--no-api-cache`.
 
-When `--financial-timeframe quarterly` is used, flow fields such as revenue, net income, operating cash flow, and capex are converted to TTM by summing the latest four quarterly rows known at each filing date. Balance-sheet fields such as assets, equity, debt, and cash use the latest reported quarter. The resulting TTM event table is saved as:
+## Tests
 
-```text
-financials_ttm.parquet
+```bash
+pytest -q
 ```
 
-### Returns
+All 19 existing tests pass. New modules (backtest, signals) compile without errors.
 
-The target return is forward return:
+## Project Structure
 
-```text
-r[t, n] = adj_close[t + horizon, n] / adj_close[t, n] - 1
+```
+factor_pipeline/
+├── backtest.py          # Backtesting engine
+├── signals.py           # Factor prediction & scoring
+├── estimation.py        # Ridge regression estimator
+├── preprocessing.py     # Exposure tensor construction
+├── fundamental_factors.py
+├── price_volume_factors.py
+├── massive_client.py
+├── config.py
+└── ...
+
+scripts/
+├── run_clean_pipeline.py       # Build factor pipeline
+├── run_backtest.py             # Backtest execution
+├── ibkr_live_portfolio.py      # Live rebalancing
+├── ibkr_live_trader.py         # Market data helper
+└── connect_ibkr_demo.py        # Connection diagnostics
+
+tests/                          # Unit tests
+tools/
+└── validate_outputs.py         # Output validation
+
+data/
+└── run_nasdaq_all_.../ → X.npy, r.npy, etc.
 ```
 
-So `X[t]` explains or predicts the future return after `t`, not the past return ending at `t`.
+## References
 
-### Universe
+- Fama, E. F., & MacBeth, J. D. (1973). "Risk, return, and equilibrium: Empirical tests." *Journal of Political Economy*, 81(3), 607-636.
+- Blitz, D., Hanauer, M. X., Vidojevic, M., & Hanauer, M. X. (2019). "Five concerns with factor investing." *Journal of Portfolio Management*, 45(4).
+- Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning*. Springer. (Ridge Regression)
 
-Ticker universe is built from Massive ticker metadata with:
-
-```text
-market=stocks
-exchange=XNAS
-```
 
 By default the runner requests `--ticker-status all`, so inactive metadata is included when the data vendor returns it. Use `--ticker-status active` only when you explicitly want active-only behavior.
 

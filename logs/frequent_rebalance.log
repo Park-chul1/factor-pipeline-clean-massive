@@ -1,0 +1,338 @@
+Tue May 12 04:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Tue May 12 04:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+[AccountValue(account='DUN189935', tag='AccountCode', value='DUN189935', currency='', modelCode=''), AccountValue(account='DUN189935', tag='AccountOrGroup', value='DUN189935', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='AccountOrGroup', value='DUN189935', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccountReady', value='true', currency='', modelCode=''), AccountValue(account='DUN189935', tag='AccountType', value='INDIVIDUAL', currency='', modelCode=''), AccountValue(account='DUN189935', tag='AccruedCash', value='619.56', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='AccruedCash', value='619.56', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedCash-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedCash-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedCash-S', value='619.56', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedDividend', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedDividend-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedDividend-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AccruedDividend-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AvailableFunds', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AvailableFunds-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AvailableFunds-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='AvailableFunds-S', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Billable', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Billable-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Billable-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Billable-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='BuyingPower', value='4098668.80', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='CashBalance', value='1023998.8574', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='CashBalance', value='1023998.8574', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ColumnPrio-C', value='2', currency='', modelCode=''), AccountValue(account='DUN189935', tag='ColumnPrio-P', value='5', currency='', modelCode=''), AccountValue(account='DUN189935', tag='ColumnPrio-S', value='1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='CorporateBondValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='CorporateBondValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Cryptocurrency', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='Cryptocurrency', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Currency', value='BASE', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='Currency', value='USD', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Cushion', value='1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradesRemaining', value='-1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradesRemainingT+1', value='-1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradesRemainingT+2', value='-1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradesRemainingT+3', value='-1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradesRemainingT+4', value='-1', currency='', modelCode=''), AccountValue(account='DUN189935', tag='DayTradingStatus-S', value='::false:1026679.52::false', currency='', modelCode=''), AccountValue(account='DUN189935', tag='EquityWithLoanValue', value='1026679.52', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='EquityWithLoanValue-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='EquityWithLoanValue-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='EquityWithLoanValue-S', value='1026679.52', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ExcessLiquidity', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ExcessLiquidity-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ExcessLiquidity-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ExcessLiquidity-S', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='ExchangeRate', value='1.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='ExchangeRate', value='1.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullAvailableFunds', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullAvailableFunds-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullAvailableFunds-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullAvailableFunds-S', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullExcessLiquidity', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullExcessLiquidity-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullExcessLiquidity-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullExcessLiquidity-S', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullInitMarginReq', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullInitMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullInitMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullInitMarginReq-S', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullMaintMarginReq', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullMaintMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullMaintMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FullMaintMarginReq-S', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FundValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='FundValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FutureOptionValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='FutureOptionValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FuturesPNL', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='FuturesPNL', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='FxCashBalance', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='FxCashBalance', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='GrossPositionValue', value='2680.67', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='GrossPositionValue-S', value='2680.67', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Guarantee', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Guarantee-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Guarantee-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Guarantee-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IncentiveCoupons', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IncentiveCoupons-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IncentiveCoupons-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IncentiveCoupons-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IndianStockHaircut', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IndianStockHaircut-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IndianStockHaircut-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IndianStockHaircut-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='InitMarginReq', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='InitMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='InitMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='InitMarginReq-S', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='IssuerOptionValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='IssuerOptionValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='Leverage-S', value='0.00', currency='', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadAvailableFunds', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadAvailableFunds-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadAvailableFunds-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadAvailableFunds-S', value='1024667.20', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadExcessLiquidity', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadExcessLiquidity-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadExcessLiquidity-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadExcessLiquidity-S', value='1024727.14', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadInitMarginReq', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadInitMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadInitMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadInitMarginReq-S', value='2012.32', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadMaintMarginReq', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadMaintMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadMaintMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadMaintMarginReq-S', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='LookAheadNextChange', value='1778529600', currency='', modelCode=''), AccountValue(account='DUN189935', tag='MaintMarginReq', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='MaintMarginReq-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='MaintMarginReq-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='MaintMarginReq-S', value='1952.38', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='MoneyMarketFundValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='MoneyMarketFundValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='MutualFundValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='MutualFundValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NLVAndMarginInReview', value='false', currency='', modelCode=''), AccountValue(account='DUN189935', tag='NetDividend', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='NetDividend', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidation', value='1027299.08', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidation-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidation-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidation-S', value='1027299.08', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidationByCurrency', value='1027299.0849', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidationByCurrency', value='1027299.0849', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='NetLiquidationUncertainty', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='OptionMarketValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='OptionMarketValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PASharesValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PASharesValue-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PASharesValue-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PASharesValue-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PhysicalCertificateValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PhysicalCertificateValue-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PhysicalCertificateValue-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PhysicalCertificateValue-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationExcess', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationExcess-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationExcess-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationExcess-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationMargin', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationMargin-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationMargin-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PostExpirationMargin-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PreviousDayEquityWithLoanValue', value='1026759.35', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='PreviousDayEquityWithLoanValue-S', value='1026759.35', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RealCurrency', value='USD', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='RealCurrency', value='USD', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RealizedPnL', value='-27.73', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='RealizedPnL', value='-27.73', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RegTEquity', value='1027299.08', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RegTEquity-S', value='1027299.08', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RegTMargin', value='1340.33', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='RegTMargin-S', value='1340.33', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='SMA', value='1025958.75', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='SMA-S', value='1025958.75', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='SegmentTitle-C', value='US Commodities', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SegmentTitle-P', value='Crypto at Paxos', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SegmentTitle-S', value='US Securities', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SettledCashByDate', value='20260511:1026745.45738584;20260512:1023998.85738584', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SettledCashByDate-C', value='20260511:0', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SettledCashByDate-P', value='20260511:0', currency='', modelCode=''), AccountValue(account='DUN189935', tag='SettledCashByDate-S', value='20260511:1026745.45738584;20260512:1023998.85738584', currency='', modelCode=''), AccountValue(account='DUN189935', tag='StockMarketValue', value='2680.67', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='StockMarketValue', value='2680.67', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TBillValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='TBillValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TBondValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='TBondValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashBalance', value='1023998.8574', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashBalance', value='1023998.8574', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashValue', value='1023998.86', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashValue-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashValue-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalCashValue-S', value='1023998.86', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalDebitCardPendingCharges', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalDebitCardPendingCharges-C', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalDebitCardPendingCharges-P', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TotalDebitCardPendingCharges-S', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='TradingType-S', value='STKNOPT', currency='', modelCode=''), AccountValue(account='DUN189935', tag='UnrealizedPnL', value='-52.09', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='UnrealizedPnL', value='-52.09', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='WarrantValue', value='0.00', currency='BASE', modelCode=''), AccountValue(account='DUN189935', tag='WarrantValue', value='0.00', currency='USD', modelCode=''), AccountValue(account='DUN189935', tag='WhatIfPMEnabled', value='true', currency='', modelCode='')]Error 200, reqId 99: No security definition has been found for the request, contract: Stock(symbol='ABLLL', exchange='SMART', currency='USD')
+Error 10089, reqId 100: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.ACAD NASDAQ.NMS/TOP/ALL, contract: Stock(symbol='ACAD', exchange='SMART', currency='USD')
+Error 200, reqId 101: No security definition has been found for the request, contract: Stock(symbol='ADD', exchange='SMART', currency='USD')
+Error 10089, reqId 102: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.ADGM NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='ADGM', exchange='SMART', currency='USD')
+Error 200, reqId 103: No security definition has been found for the request, contract: Stock(symbol='ADN', exchange='SMART', currency='USD')
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ABLLL', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ACAD', exchange='SMART', currency='USD'), minTick=0.01, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADD', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADGM', exchange='SMART', currency='USD'), minTick=0.0001, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADN', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADTX', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 227784, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=0.1032, bidSize=100.0, ask=0.1058, askSize=700.0, last=0.1057, lastSize=2001.0, volume=816439838.0, open=0.1, high=0.11, low=0.098, close=0.1188, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AEI', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 403033, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=1.86, bidSize=10.0, ask=1.94, askSize=99.0, last=1.9, lastSize=200.0, volume=266931337.0, open=1.85, high=1.95, low=1.7461, close=1.83, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AFBI', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 402056, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.01, bid=22.45, bidSize=5300.0, ask=22.47, askSize=600.0, last=22.46, lastSize=300.0, volume=959.0, open=22.5, high=22.5, low=22.45, close=22.46, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIHS', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 401574, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=1.14, bidSize=2800.0, ask=1.18, askSize=400.0, last=1.18, lastSize=200.0, volume=38283000.0, open=1.16, high=1.18, low=1.13, close=1.18, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIRJ', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 598850, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.01, bid=3.81, bidSize=2400.0, ask=3.82, askSize=2100.0, last=3.81, lastSize=150.0, volume=1174623711.0, open=3.83, high=3.87, low=3.56, close=3.55, ticks=[TickData(time=datetime.datetime(2026, 5, 11, 19, 30, 12, 598850, tzinfo=datetime.timezone.utc), tickType=76, price=3.83, size=0.0)], bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIRS', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 12, 597964, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=4.17, bidSize=600.0, ask=4.2, askSize=1400.0, last=4.18, lastSize=110.0, volume=-2039895721.0, open=3.92, high=4.48, low=3.8906, close=3.86, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AISP', exchange='SMART', currency='USD'), marketDataType=3)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALBT', exchange='SMART', currency='USD'), marketDataType=3)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALCE', exchange='SMART', currency='USD'), marketDataType=3)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALLR', exchange='SMART', currency='USD'), marketDataType=3)
+Error 10349, reqId 114: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='ACXP', exchange='SMART', currency='USD'), order=MarketOrder(orderId=114, clientId=1, action='SELL', totalQuantity=313), orderStatus=OrderStatus(orderId=114, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 12, 625797, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 12, 848720, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 114: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 115: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='AIRS', exchange='SMART', currency='USD'), order=MarketOrder(orderId=115, clientId=1, action='BUY', totalQuantity=387), orderStatus=OrderStatus(orderId=115, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 13, 635494, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 14, 58436, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 115: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 116: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='ACRS', exchange='SMART', currency='USD'), order=MarketOrder(orderId=116, clientId=1, action='SELL', totalQuantity=136), orderStatus=OrderStatus(orderId=116, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 14, 636838, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 14, 848587, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 116: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 117: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='ADGM', exchange='SMART', currency='USD'), order=MarketOrder(orderId=117, clientId=1, action='SELL', totalQuantity=704), orderStatus=OrderStatus(orderId=117, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 15, 638411, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 15, 842951, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 117: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 118: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='ACGLN', exchange='SMART', currency='USD'), order=MarketOrder(orderId=118, clientId=1, action='SELL', totalQuantity=39), orderStatus=OrderStatus(orderId=118, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 16, 639919, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 16, 849293, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 118: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 119: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='AEI', exchange='SMART', currency='USD'), order=MarketOrder(orderId=119, clientId=1, action='BUY', totalQuantity=852), orderStatus=OrderStatus(orderId=119, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 17, 642500, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 17, 847264, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 119: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 120: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='ADTX', exchange='SMART', currency='USD'), order=MarketOrder(orderId=120, clientId=1, action='BUY', totalQuantity=15320), orderStatus=OrderStatus(orderId=120, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 18, 644132, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 19, 67466, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 120: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 121: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='AFBI', exchange='SMART', currency='USD'), order=MarketOrder(orderId=121, clientId=1, action='BUY', totalQuantity=72), orderStatus=OrderStatus(orderId=121, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 19, 646584, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 20, 94835, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 121: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 122: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='AIRJ', exchange='SMART', currency='USD'), order=MarketOrder(orderId=122, clientId=1, action='BUY', totalQuantity=425), orderStatus=OrderStatus(orderId=122, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 20, 647540, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 21, 47449, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 122: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 10349, reqId 123: Order TIF was set to DAY based on order preset.
+Canceled order: Trade(contract=Stock(symbol='AIHS', exchange='SMART', currency='USD'), order=MarketOrder(orderId=123, clientId=1, action='BUY', totalQuantity=1372), orderStatus=OrderStatus(orderId=123, status='Cancelled', filled=0.0, remaining=0.0, avgFillPrice=0.0, permId=0, parentId=0, lastFillPrice=0.0, clientId=0, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 21, 648906, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 22, 49930, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 123: Order TIF was set to DAY based on order preset.', errorCode=10349)], advancedError='')
+Error 201, reqId 123: Order rejected - reason:No Trading Permission, Customer Ineligible; Ineligibility reasons:<br>Margin concern/risk management: For risk management purposes, this product is in closing-only status. You may <br>close existing positions but not open new ones.,<br>Other regulatory requirements: Due to regulatory requirements, this product is in closing-only status. You may<br> close existing positions but not open new ones.
+Canceled order: Trade(contract=Stock(symbol='AIHS', exchange='SMART', currency='USD'), order=MarketOrder(orderId=123, clientId=1, permId=2136863547, action='BUY', totalQuantity=1372.0, lmtPrice=0.0, auxPrice=0.0), orderStatus=OrderStatus(orderId=123, status='Cancelled', filled=0.0, remaining=1372.0, avgFillPrice=0.0, permId=2136863547, parentId=0, lastFillPrice=0.0, clientId=1, whyHeld='', mktCapPrice=0.0), fills=[], log=[TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 21, 648906, tzinfo=datetime.timezone.utc), status='PendingSubmit', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 22, 49930, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 10349, reqId 123: Order TIF was set to DAY based on order preset.', errorCode=10349), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 22, 264033, tzinfo=datetime.timezone.utc), status='Inactive', message='', errorCode=0), TradeLogEntry(time=datetime.datetime(2026, 5, 11, 19, 30, 22, 267634, tzinfo=datetime.timezone.utc), status='Cancelled', message='Error 201, reqId 123: Order rejected - reason:No Trading Permission, Customer Ineligible; Ineligibility reasons:<br>Margin concern/risk management: For risk management purposes, this product is in closing-only status. You may <br>close existing positions but not open new ones.,<br>Other regulatory requirements: Due to regulatory requirements, this product is in closing-only status. You may<br> close existing positions but not open new ones.', errorCode=201)], advancedError='')
+Error 200, reqId 124: No security definition has been found for the request, contract: Stock(symbol='ABLLL', exchange='SMART', currency='USD')
+Error 10089, reqId 125: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.ACAD NASDAQ.NMS/TOP/ALL, contract: Stock(symbol='ACAD', exchange='SMART', currency='USD')
+Error 200, reqId 126: No security definition has been found for the request, contract: Stock(symbol='ADD', exchange='SMART', currency='USD')
+Error 10089, reqId 127: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.ADGM NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='ADGM', exchange='SMART', currency='USD')
+Error 200, reqId 128: No security definition has been found for the request, contract: Stock(symbol='ADN', exchange='SMART', currency='USD')
+Error 10089, reqId 129: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.ADTX NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='ADTX', exchange='SMART', currency='USD')
+Error 10089, reqId 130: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.AEI NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='AEI', exchange='SMART', currency='USD')
+Error 10089, reqId 131: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.AFBI NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='AFBI', exchange='SMART', currency='USD')
+Error 10089, reqId 133: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.AIRJ NASDAQ.SCM/TOP/ALL, contract: Stock(symbol='AIRJ', exchange='SMART', currency='USD')
+Error 10089, reqId 134: Requested market data requires additional subscription for API. See link in 'Market Data Connections' dialog for more details.AIRS NASDAQ.NMS/TOP/ALL, contract: Stock(symbol='AIRS', exchange='SMART', currency='USD')
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ABLLL', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ACAD', exchange='SMART', currency='USD'), minTick=0.01, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADD', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADGM', exchange='SMART', currency='USD'), minTick=0.0001, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADN', exchange='SMART', currency='USD'))
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ADTX', exchange='SMART', currency='USD'), minTick=0.0001, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AEI', exchange='SMART', currency='USD'), minTick=0.0001, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AFBI', exchange='SMART', currency='USD'), minTick=0.01, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIHS', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 24, 699766, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=1.14, bidSize=2800.0, ask=1.18, askSize=400.0, last=1.18, lastSize=200.0, volume=38283000.0, open=1.16, high=1.18, low=1.13, close=1.18, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIRJ', exchange='SMART', currency='USD'), minTick=0.01, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AIRS', exchange='SMART', currency='USD'), minTick=0.0001, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='AISP', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 47, 906878, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=2.39, bidSize=2500.0, ask=2.4, askSize=4600.0, last=2.3972, lastSize=207.0, prevBidSize=3000.0, prevAskSize=2500.0, prevLast=2.4, prevLastSize=117.0, volume=860862457.0, open=2.51, high=2.69, low=2.37, close=2.55, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALBT', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 25, 153935, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=0.3751, bidSize=300.0, ask=0.4, askSize=1000.0, last=0.3825, lastSize=500.0, volume=-297646152.0, open=0.39, high=0.4, low=0.375, close=0.4, bboExchange='9c0001', snapshotPermissions=1)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALCE', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 28, 490674, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=0.0035, bidSize=10000.0, ask=1.4, askSize=6785.0, last=-1.0, lastSize=0.0, volume=0.0, open=0.0, close=0.0006)
+cancelMktData: No reqId found for contract Ticker(contract=Stock(symbol='ALLR', exchange='SMART', currency='USD'), time=datetime.datetime(2026, 5, 11, 19, 30, 25, 153935, tzinfo=datetime.timezone.utc), marketDataType=3, minTick=0.0001, bid=1.68, bidSize=100.0, ask=1.7, askSize=1200.0, last=1.69, lastSize=455.0, volume=-1099774747.0, open=1.58, high=1.72, low=1.52, close=1.55, bboExchange='9c0001', snapshotPermissions=1)
+
+equity=1026679.52, cash=1023998.8574
+Loaded 7580 tickers from data/processed
+Selected 15 symbols after risk limits
+--- live prices ---
+ABLLL: None
+ACAD: None
+ADD: None
+ADGM: None
+ADN: None
+ADTX: 0.1057
+AEI: 1.9
+AFBI: 22.46
+AIHS: 1.18
+AIRJ: 3.81
+AIRS: 4.18
+AISP: None
+ALBT: None
+ALCE: None
+ALLR: None
+Planned orders for 10 symbols
+ACXP: current=313, target=0, order=-313
+AIRS: current=0, target=387, order=387
+ACRS: current=136, target=0, order=-136
+ADGM: current=704, target=0, order=-704
+ACGLN: current=39, target=0, order=-39
+AEI: current=0, target=852, order=852
+ADTX: current=0, target=15320, order=15320
+AFBI: current=0, target=72, order=72
+AIRJ: current=0, target=425, order=425
+AIHS: current=0, target=1372, order=1372
+Order: SELL 313 ACXP -> status=Submitted
+Order: BUY 387 AIRS -> status=Filled
+Order: SELL 136 ACRS -> status=Submitted
+Order: SELL 704 ADGM -> status=Filled
+Order: SELL 39 ACGLN -> status=Filled
+Order: BUY 852 AEI -> status=Submitted
+Order: BUY 15320 ADTX -> status=Submitted
+Order: BUY 72 AFBI -> status=Filled
+Order: BUY 425 AIRJ -> status=Filled
+Order: BUY 1372 AIHS -> status=Inactive
+Appended daily PnL snapshot to data/ibkr_daily_pnl.csv
+Starting live market data stream for 15 symbols (market_data_type=3)
+--- market snapshot 1/1 ---
+ABLLL: last=NA, bid=NA, ask=NA
+ACAD: last=NA, bid=NA, ask=NA
+ADD: last=NA, bid=NA, ask=NA
+ADGM: last=NA, bid=NA, ask=NA
+ADN: last=NA, bid=NA, ask=NA
+ADTX: last=NA, bid=NA, ask=NA
+AEI: last=NA, bid=NA, ask=NA
+AFBI: last=NA, bid=NA, ask=NA
+AIHS: last=1.18, bid=1.14, ask=1.18
+AIRJ: last=NA, bid=NA, ask=NA
+AIRS: last=NA, bid=NA, ask=NA
+AISP: last=2.3972, bid=2.39, ask=2.4
+ALBT: last=0.3825, bid=0.3751, ask=0.4
+ALCE: last=-1.0, bid=0.0035, ask=1.4
+ALLR: last=1.69, bid=1.68, ask=1.7
+disconnected
+Tue May 12 04:30:54 KST 2026: Portfolio rebalancing completed successfully
+Tue May 12 04:30:54 KST 2026: Frequent rebalancing finished
+Tue May 12 23:30:03 KST 2026: Starting frequent portfolio rebalancing...
+Tue May 12 23:30:03 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1026430.81, cash=1018432.38
+pipeline signal date=2024-12-31 age_days=497
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 497 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Tue May 12 23:30:04 KST 2026: Portfolio rebalancing failed
+Tue May 12 23:30:04 KST 2026: Frequent rebalancing finished
+Wed May 13 00:30:04 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 00:30:04 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1026071.24, cash=1018432.38
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 498 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Wed May 13 00:30:05 KST 2026: Portfolio rebalancing failed
+Wed May 13 00:30:05 KST 2026: Frequent rebalancing finished
+Wed May 13 01:30:06 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 01:30:06 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1025909.15, cash=977821.0899
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 498 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Wed May 13 01:30:07 KST 2026: Portfolio rebalancing failed
+Wed May 13 01:30:07 KST 2026: Frequent rebalancing finished
+Wed May 13 02:30:06 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 02:30:06 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1026763.99, cash=978069.2295
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 498 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Wed May 13 02:30:06 KST 2026: Portfolio rebalancing failed
+Wed May 13 02:30:06 KST 2026: Frequent rebalancing finished
+Wed May 13 03:30:03 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 03:30:03 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1025702.61, cash=1129222.3625
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 498 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Wed May 13 03:30:04 KST 2026: Portfolio rebalancing failed
+Wed May 13 03:30:04 KST 2026: Frequent rebalancing finished
+Wed May 13 04:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 04:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1026217.35, cash=1175021.349
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 489, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 432, in main
+    raise RuntimeError(
+RuntimeError: Refusing live orders because signal date 2024-12-31 is 498 days old. Refresh pipeline data or use --allow-stale-signals to override.
+Wed May 13 04:30:03 KST 2026: Portfolio rebalancing failed
+Wed May 13 04:30:03 KST 2026: Frequent rebalancing finished
+Wed May 13 22:38:25 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 22:38:25 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1010447.12, cash=1424816.07
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Wed May 13 22:38:31 KST 2026: Portfolio rebalancing failed
+Wed May 13 22:38:31 KST 2026: Frequent rebalancing finished
+Wed May 13 23:30:03 KST 2026: Starting frequent portfolio rebalancing...
+Wed May 13 23:30:03 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1007926.23, cash=1424816.07
+pipeline signal date=2024-12-31 age_days=498
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Wed May 13 23:30:04 KST 2026: Portfolio rebalancing failed
+Wed May 13 23:30:04 KST 2026: Frequent rebalancing finished
+Thu May 14 00:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Thu May 14 00:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1011504.76, cash=1424816.07
+pipeline signal date=2024-12-31 age_days=499
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Thu May 14 00:30:03 KST 2026: Portfolio rebalancing failed
+Thu May 14 00:30:03 KST 2026: Frequent rebalancing finished
+Thu May 14 01:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Thu May 14 01:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1011598.6, cash=1424816.07
+pipeline signal date=2024-12-31 age_days=499
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Thu May 14 01:30:03 KST 2026: Portfolio rebalancing failed
+Thu May 14 01:30:03 KST 2026: Frequent rebalancing finished
+Thu May 14 02:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Thu May 14 02:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1018656.03, cash=1424816.07
+pipeline signal date=2024-12-31 age_days=499
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Thu May 14 02:30:03 KST 2026: Portfolio rebalancing failed
+Thu May 14 02:30:03 KST 2026: Frequent rebalancing finished
+Thu May 14 03:30:02 KST 2026: Starting frequent portfolio rebalancing...
+Thu May 14 03:30:02 KST 2026: Running portfolio rebalancing...
+connected: True
+managedAccounts: ['DUN189935']
+--- account summary ---
+account_values_count=190
+equity=1021199.21, cash=1344637.4503
+pipeline signal date=2024-12-31 age_days=499
+WARN: signal is older than --max-signal-age-days=5
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 497, in <module>
+    main()
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/ibkr_live_portfolio.py", line 429, in main
+    raise RuntimeError(
+RuntimeError: Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. Use scripts/run_next_open_execution_job.py with an after-close order plan, or set ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics.
+Thu May 14 03:30:03 KST 2026: Portfolio rebalancing failed
+Thu May 14 03:30:03 KST 2026: Frequent rebalancing finished

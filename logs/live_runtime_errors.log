@@ -1,0 +1,10 @@
+
+[2026-05-13T03:10:53.021608] RuntimeError: IBKR paper order 90 TDIC status=Inactive: 
+Traceback (most recent call last):
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/run_live_demo_pipeline.py", line 216, in main
+    run_once(config, provider, broker, universe, holding_bars)
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/scripts/run_live_demo_pipeline.py", line 140, in run_once
+    broker.place_order(order)
+  File "/home/chul/projects/Quant2/factor_pipeline_clean/live/broker.py", line 218, in place_order
+    raise RuntimeError(f"IBKR paper order {trade.order.orderId} {order.ticker} status={trade.orderStatus.status}: {last_log}")
+RuntimeError: IBKR paper order 90 TDIC status=Inactive: 

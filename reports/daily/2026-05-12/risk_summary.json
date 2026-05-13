@@ -1,0 +1,29 @@
+{
+  "gross_exposure": 0.9906976744186047,
+  "net_exposure": 0.0,
+  "long_exposure": 0.49534883720930234,
+  "short_exposure": -0.49534883720930234,
+  "number_long": 275,
+  "number_short": 276,
+  "max_position_weight": 0.002860599542949321,
+  "top_10_position_weights": {
+    "ASRT": -0.002860599542949321,
+    "ATEX": 0.002860599542949321,
+    "ASYS": 0.002860599542949321,
+    "ASTI": -0.002860599542949321,
+    "ATOM": -0.002860599542949321,
+    "AVR": -0.002860599542949321,
+    "ULCC": 0.002860599542949321,
+    "USAR": 0.002860599542949321,
+    "VEEE": -0.002860599542949321,
+    "VISN": -0.002860599542949321
+  },
+  "sector_exposures": {},
+  "beta_estimate": null,
+  "expected_turnover": 0.1,
+  "realized_turnover": null,
+  "cash": null,
+  "leverage": 0.9906976744186047,
+  "margin_usage": null,
+  "liquidity_warnings": []
+}

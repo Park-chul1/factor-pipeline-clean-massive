@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+
 import numpy as np
 import pandas as pd
 
@@ -100,6 +102,58 @@ def _select_ridge_gcv(A: np.ndarray, y: np.ndarray, ridge_grid: np.ndarray) -> f
     return best_lambda
 
 
+def _estimate_one_date(
+    t: int,
+    Xt: np.ndarray,
+    rt: np.ndarray,
+    mask_t: np.ndarray | None,
+    K: int,
+    min_names: int,
+    fixed_ridge: float,
+    ridge_selection: str,
+    grid: np.ndarray,
+    solver: str,
+    require_full_rank_without_ridge: bool,
+) -> tuple[int, np.ndarray, float, int]:
+    out = np.full(K, np.nan, dtype=float)
+    mask = np.isfinite(rt) & np.any(np.isfinite(Xt), axis=1)
+    if mask_t is not None:
+        mask &= mask_t
+    n_obs = int(mask.sum())
+
+    ridge_t = (
+        _select_ridge_gcv(
+            np.where(np.isfinite(Xt[mask]), Xt[mask], 0.0),
+            rt[mask] - np.nanmean(rt[mask]),
+            grid,
+        )
+        if ridge_selection == "gcv" and n_obs > 0
+        else fixed_ridge
+    )
+
+    if ridge_t > 0:
+        required = min_names
+    else:
+        required = max(min_names, K + 2) if require_full_rank_without_ridge else min_names
+    if n_obs < required:
+        return t, out, ridge_t, n_obs
+
+    A = np.where(np.isfinite(Xt[mask]), Xt[mask], 0.0)
+    y = rt[mask]
+    # Center y cross-sectionally so intercept-like market return does not
+    # get forced into style factors. A true intercept can be added later.
+    y = y - np.nanmean(y)
+
+    try:
+        if solver == "qr":
+            out = _solve_ridge_qr(A, y, ridge_t)
+        else:
+            out = _solve_ridge_normal(A, y, ridge_t)
+    except np.linalg.LinAlgError:
+        pass
+    return t, out, ridge_t, n_obs
+
+
 def estimate_factor_returns(
     X: np.ndarray,
     r: np.ndarray,
@@ -110,6 +164,7 @@ def estimate_factor_returns(
     ridge_grid: list[float] | tuple[float, ...] | np.ndarray | None = None,
     ridge_selection: str = "fixed",
     solver: str = "qr",
+    n_jobs: int = 1,
     return_diagnostics: bool = False,
 ) -> np.ndarray | tuple[np.ndarray, pd.DataFrame]:
     """Estimate daily cross-sectional factor returns.
@@ -131,6 +186,8 @@ def estimate_factor_returns(
         raise ValueError("ridge_selection must be 'fixed' or 'gcv'")
     if solver not in {"qr", "normal"}:
         raise ValueError("solver must be 'qr' or 'normal'")
+    if n_jobs <= 0:
+        raise ValueError("n_jobs must be positive")
 
     fixed_ridge = np.nan if str(ridge).lower() == "auto" else float(ridge)
     grid = np.asarray(ridge_grid if ridge_grid is not None else DEFAULT_RIDGE_GRID, dtype=float)
@@ -142,44 +199,37 @@ def estimate_factor_returns(
         diag = pd.DataFrame({"selected_ridge": selected_ridge, "n_observations": n_observations})
         return (f, diag) if return_diagnostics else f
 
-    for t in range(T):
-        Xt = X[t]
-        rt = r[t]
-        mask = np.isfinite(rt) & np.any(np.isfinite(Xt), axis=1)
-        if mask_arr is not None:
-            mask &= mask_arr[t]
-        n_obs = int(mask.sum())
-        n_observations[t] = n_obs
-        ridge_t = _select_ridge_gcv(
-            np.where(np.isfinite(Xt[mask]), Xt[mask], 0.0),
-            rt[mask] - np.nanmean(rt[mask]),
-            grid,
-        ) if ridge_selection == "gcv" and n_obs > 0 else fixed_ridge
-        selected_ridge[t] = ridge_t
+    def task(t: int) -> tuple[int, np.ndarray, float, int]:
+        return _estimate_one_date(
+            t=t,
+            Xt=X[t],
+            rt=r[t],
+            mask_t=None if mask_arr is None else mask_arr[t],
+            K=K,
+            min_names=min_names,
+            fixed_ridge=fixed_ridge,
+            ridge_selection=ridge_selection,
+            grid=grid,
+            solver=solver,
+            require_full_rank_without_ridge=require_full_rank_without_ridge,
+        )
 
-        if ridge_t > 0:
-            required = min_names
-        else:
-            required = max(min_names, K + 2) if require_full_rank_without_ridge else min_names
-        if n_obs < required:
-            continue
-
-        A = np.where(np.isfinite(Xt[mask]), Xt[mask], 0.0)
-        y = rt[mask]
-        # Center y cross-sectionally so intercept-like market return does not
-        # get forced into style factors. A true intercept can be added later.
-        y = y - np.nanmean(y)
-
-        try:
-            if solver == "qr":
-                f[t] = _solve_ridge_qr(A, y, ridge_t)
-            else:
-                f[t] = _solve_ridge_normal(A, y, ridge_t)
-        except np.linalg.LinAlgError:
-            continue
+    if n_jobs == 1 or T <= 1:
+        results = map(task, range(T))
+        for t, ft, ridge_t, n_obs in results:
+            f[t] = ft
+            selected_ridge[t] = ridge_t
+            n_observations[t] = n_obs
+    else:
+        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
+            for t, ft, ridge_t, n_obs in executor.map(task, range(T)):
+                f[t] = ft
+                selected_ridge[t] = ridge_t
+                n_observations[t] = n_obs
 
     diag = pd.DataFrame({
         "selected_ridge": selected_ridge,
         "n_observations": n_observations,
+        "n_jobs": int(n_jobs),
     })
     return (f, diag) if return_diagnostics else f

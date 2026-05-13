@@ -1,0 +1,185 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+import pandas as pd
+
+from live.broker import IBKRPaperBroker
+from live.config import LiveConfig
+from live.execution import generate_orders
+from live.risk import apply_risk_checks
+
+
+@dataclass(frozen=True)
+class PaperSubmitConfig:
+    host: str = "172.30.1.41"
+    port: int = 7497
+    client_id: int = 72
+    account: str | None = None
+    dry_run: bool = False
+    max_orders: int | None = None
+    use_live_prices: bool = False
+    transaction_cost_bps: float = 1.0
+    slippage_bps: float = 2.0
+    min_net_alpha_after_cost_bps: float = 5.0
+    submit_mode: str = "burst"
+    submit_pause_seconds: float = 0.05
+    post_submit_wait_seconds: float = 5.0
+
+
+def load_target_weights(report_dir: Path, cfg: PaperSubmitConfig | None = None) -> pd.Series:
+    path = report_dir / "target_positions.csv"
+    if not path.exists():
+        raise FileNotFoundError(f"Missing target positions file: {path}")
+    df = pd.read_csv(path)
+    required = {"ticker", "target_weight"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"{path} missing required columns: {sorted(missing)}")
+    df = df.assign(target_weight=pd.to_numeric(df["target_weight"], errors="coerce"))
+    if cfg is not None and "alpha_score" in df.columns:
+        alpha = pd.to_numeric(df["alpha_score"], errors="coerce")
+        threshold = (cfg.transaction_cost_bps + cfg.slippage_bps + cfg.min_net_alpha_after_cost_bps) / 10_000.0
+        directional_alpha = alpha.where(df["target_weight"].ge(0), -alpha)
+        keep = df["target_weight"].abs().le(1e-12) | directional_alpha.ge(threshold)
+        df = df[keep].copy()
+    weights = (
+        df
+        .dropna(subset=["ticker", "target_weight"])
+        .groupby("ticker")["target_weight"]
+        .last()
+        .astype(float)
+    )
+    return weights[weights.abs() > 1e-12].sort_index()
+
+
+def _fallback_prices_from_order_plan(report_dir: Path) -> pd.Series:
+    frames = []
+    for name in ["alpha_rankings.csv", "orders.csv"]:
+        path = report_dir / name
+        if not path.exists():
+            continue
+        df = pd.read_csv(path)
+        if "ticker" not in df.columns:
+            continue
+        if "signal_price" in df.columns:
+            prices = pd.to_numeric(df["signal_price"], errors="coerce")
+        elif "execution_price" in df.columns:
+            prices = pd.to_numeric(df["execution_price"], errors="coerce")
+        else:
+            continue
+        frames.append(pd.Series(prices.to_numpy(), index=df["ticker"].astype(str), dtype=float))
+    if not frames:
+        return pd.Series(dtype=float)
+    out = pd.concat(frames)
+    return out[out.gt(0)].groupby(level=0).last()
+
+
+def _live_config(cfg: PaperSubmitConfig) -> LiveConfig:
+    base = LiveConfig(
+        DATA_PROVIDER="massive",
+        BROKER="ibkr_paper",
+        PAPER_TRADING=True,
+        ENABLE_REAL_TRADING=False,
+        IBKR_HOST=cfg.host,
+        IBKR_PORT=cfg.port,
+        IBKR_BROKER_CLIENT_ID=cfg.client_id,
+        IBKR_DATA_CLIENT_ID=cfg.client_id,
+        IBKR_ACCOUNT=cfg.account,
+        DRY_RUN=cfg.dry_run,
+        COST_BPS=cfg.transaction_cost_bps,
+        SLIPPAGE_BPS=cfg.slippage_bps,
+        MIN_NET_ALPHA_AFTER_COST_BPS=cfg.min_net_alpha_after_cost_bps,
+    )
+    base.validate()
+    return base
+
+
+def submit_report_to_ibkr_paper(report_dir: str | Path, cfg: PaperSubmitConfig) -> pd.DataFrame:
+    report_path = Path(report_dir)
+    target_weights = load_target_weights(report_path, cfg)
+    if target_weights.empty:
+        raise RuntimeError(f"No non-zero target weights found in {report_path / 'target_positions.csv'}")
+
+    live_config = _live_config(cfg)
+    broker = IBKRPaperBroker(live_config)
+    rows: list[dict[str, Any]] = []
+    try:
+        account = broker.get_account_summary()
+        equity = float(account.get("equity", live_config.PAPER_STARTING_EQUITY))
+        current_positions = broker.get_positions()
+        symbols = sorted(set(target_weights.index.astype(str)) | set(current_positions.index.astype(str)))
+        fallback = _fallback_prices_from_order_plan(report_path)
+        if cfg.use_live_prices:
+            prices = broker.get_prices(symbols).combine_first(fallback)
+        else:
+            prices = fallback.reindex(symbols)
+
+        orders = generate_orders(current_positions, target_weights, prices, equity, live_config)
+        safe_orders, risk_rows = apply_risk_checks(orders, live_config, equity, prices)
+        risk_by_key = {(r["ticker"], r["side"], int(r["quantity"])): r for r in risk_rows}
+        if cfg.max_orders is not None:
+            safe_orders = safe_orders[: cfg.max_orders]
+
+        submitted_at = pd.Timestamp.utcnow().isoformat()
+
+        def base_row(order):
+            row = {
+                "submitted_at": submitted_at,
+                "ticker": order.ticker,
+                "side": order.side,
+                "quantity": order.quantity,
+                "limit_price": order.limit_price,
+                "notional": abs(order.quantity * order.limit_price),
+                "dry_run": cfg.dry_run,
+                "order_status": "dry_run" if cfg.dry_run else "submitted",
+                "order_id": "",
+                "error": "",
+                "transaction_cost_bps": cfg.transaction_cost_bps,
+                "slippage_bps": cfg.slippage_bps,
+            }
+            row["estimated_transaction_cost"] = row["notional"] * cfg.transaction_cost_bps / 10_000.0
+            row["estimated_slippage_cost"] = row["notional"] * cfg.slippage_bps / 10_000.0
+            row["estimated_total_cost"] = row["estimated_transaction_cost"] + row["estimated_slippage_cost"]
+            risk = risk_by_key.get((order.ticker, order.side, int(order.quantity)), {})
+            row["risk_ok"] = bool(risk.get("ok", True))
+            row["risk_reason"] = risk.get("reason", "")
+            return row
+
+        if cfg.dry_run:
+            rows.extend(base_row(order) for order in safe_orders)
+        elif cfg.submit_mode == "burst" and hasattr(broker, "place_orders_burst"):
+            burst_rows = broker.place_orders_burst(
+                safe_orders,
+                pause_seconds=cfg.submit_pause_seconds,
+                wait_seconds=cfg.post_submit_wait_seconds,
+            )
+            for order, burst in zip(safe_orders, burst_rows, strict=False):
+                row = base_row(order)
+                row.update(burst)
+                row["notional"] = abs(row["quantity"] * row["limit_price"])
+                row["estimated_transaction_cost"] = row["notional"] * cfg.transaction_cost_bps / 10_000.0
+                row["estimated_slippage_cost"] = row["notional"] * cfg.slippage_bps / 10_000.0
+                row["estimated_total_cost"] = row["estimated_transaction_cost"] + row["estimated_slippage_cost"]
+                rows.append(row)
+        elif cfg.submit_mode == "sequential":
+            for order in safe_orders:
+                row = base_row(order)
+                try:
+                    row["order_id"] = broker.place_order(order)
+                except Exception as exc:
+                    row["order_status"] = "rejected"
+                    row["error"] = f"{type(exc).__name__}: {exc}"
+                rows.append(row)
+        else:
+            raise ValueError("submit_mode must be one of: burst, sequential")
+    finally:
+        if hasattr(broker, "ib"):
+            broker.ib.disconnect()
+
+    out = pd.DataFrame(rows)
+    out_path = report_path / "paper_order_results.csv"
+    out.to_csv(out_path, index=False)
+    return out

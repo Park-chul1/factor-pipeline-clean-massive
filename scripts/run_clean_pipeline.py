@@ -47,7 +47,15 @@ def parse_args():
                    help="Comma-separated lambda grid for --ridge auto, e.g. 1e-6,1e-5,1e-4,1e-3")
     p.add_argument("--ridge-solver", default="qr", choices=["qr", "normal"],
                    help="qr solves the augmented ridge least-squares system")
+    p.add_argument("--estimation-workers", type=int, default=1,
+                   help="Parallel worker threads for date-by-date factor return estimation")
     p.add_argument("--horizon", type=int, default=1)
+    p.add_argument(
+        "--max-abs-forward-return",
+        type=float,
+        default=1.0,
+        help="Drop forward returns whose absolute value exceeds this threshold; use <=0 to disable",
+    )
     p.add_argument("--financial-timeframe", default="quarterly", choices=["ttm", "quarterly", "annual"],
                    help="quarterly builds historical point-in-time TTM flows; ttm keeps vendor TTM rows")
     p.add_argument("--financial-limit", type=int, default=100)
@@ -67,8 +75,12 @@ def parse_args():
     p.add_argument("--sleep", type=float, default=0.15)
     p.add_argument("--no-cache", action="store_true", help="Disable parquet dataset caches")
     p.add_argument("--no-api-cache", action="store_true", help="Disable raw API response cache")
+    p.add_argument("--run-diagnostics", action="store_true", help="Run post-pipeline ridge diagnostics")
+    p.add_argument("--diagnostics-lambdas", default="0,1e-8,1e-6,1e-4,1e-2,1e-1",
+                   help="Comma-separated lambda values for diagnostics")
+    p.add_argument("--diagnostics-output-dir", default=None,
+                   help="Output directory for diagnostics. Default: <out-dir>/diagnostics")
     return p.parse_args()
-
 
 def ticker_status_to_active(status: str) -> bool | None:
     return {"all": None, "active": True, "inactive": False}[status]
@@ -240,7 +252,12 @@ def main():
         max_factor_corr=args.max_factor_corr,
         corr_min_overlap=args.corr_min_overlap,
     )
-    r_df = compute_forward_returns(panel["adj_close"], horizon=args.horizon).where(tradable_mask_df)
+    max_abs_forward_return = args.max_abs_forward_return if args.max_abs_forward_return > 0 else None
+    r_df = compute_forward_returns(
+        panel["adj_close"],
+        horizon=args.horizon,
+        max_abs_return=max_abs_forward_return,
+    ).where(tradable_mask_df)
     r = r_df.to_numpy(dtype=float)
     ridge_value = parse_ridge(args.ridge)
     f, ridge_diag = estimate_factor_returns(
@@ -252,6 +269,7 @@ def main():
         ridge_grid=parse_ridge_grid(args.ridge_grid),
         ridge_selection="gcv" if ridge_value == "auto" else "fixed",
         solver=args.ridge_solver,
+        n_jobs=args.estimation_workers,
         return_diagnostics=True,
     )
 
@@ -283,7 +301,7 @@ def main():
         "data_policy": {
             "prices": "Massive grouped daily bars adjusted=true; daily OHLCV only available after market date.",
             "fundamentals": "Massive financials endpoint; quarterly rows are converted to point-in-time TTM flow fields before daily forward-fill. Each filing is available from filing_date if provided, otherwise end_date + financial_lag_days.",
-            "look_ahead_bias_control": "Fundamentals are point-in-time merged by available_date then forward-filled. Future filings are never backfilled into earlier trading dates. Returns use adj_close[t+h]/adj_close[t]-1.",
+            "look_ahead_bias_control": "Fundamentals are point-in-time merged by available_date then forward-filled. Future filings are never backfilled into earlier trading dates. Returns use adj_close[t+h]/adj_close[t]-1 and outlier forward returns are dropped when max_abs_forward_return is set.",
             "universe": f"Massive ticker metadata exchange={args.exchange}, ticker_status={args.ticker_status}; selected by universe_rank_by={args.universe_rank_by}, max_tickers={args.max_tickers}.",
             "tradable_mask": "date x ticker mask from finite positive adjusted close and positive volume; applied before factor preprocessing and during regression.",
             "api_cache": f"Raw Massive API JSON responses are cached under {api_cache_display} unless --no-api-cache is set.",
@@ -297,12 +315,14 @@ def main():
         "n_factors_raw": len(factors),
         "n_factors_kept": len(factor_names),
         "n_factors": len(factor_names),
+        "max_abs_forward_return": max_abs_forward_return,
         "price_volume_factors": list(pv_factors.keys()),
         "fundamental_factors": list(fundamental_factors.keys()),
         "X": array_summary("X", X),
         "r": array_summary("r", r),
         "factor_returns": array_summary("factor_returns", f),
         "ridge": ridge_summary,
+        "estimation_workers": args.estimation_workers,
         "tradable_mask": {
             "shape": list(tradable_mask.shape),
             "true_count": int(tradable_mask.sum()),
@@ -321,6 +341,21 @@ def main():
     save_json(summary, out_dir / "pipeline_summary.json")
     print(f"done: {out_dir}")
     print(f"X={X.shape}, r={r.shape}, factor_returns={f.shape}, factors={len(factor_names)}")
+
+    # Optional: run post-pipeline ridge diagnostics
+    if args.run_diagnostics:
+        from factor_pipeline.diagnostics_ridge import run_estimation_diagnostics
+        diagnostics_out = args.diagnostics_output_dir or str(out_dir / "diagnostics")
+        lambdas = [float(x.strip()) for x in args.diagnostics_lambdas.split(",")]
+        run_estimation_diagnostics(
+            X=X,
+            r=r,
+            valid_mask=tradable_mask,
+            lambdas=lambdas,
+            factor_names=factor_names,
+            output_dir=diagnostics_out,
+            min_names=args.min_names,
+        )
 
 
 if __name__ == "__main__":

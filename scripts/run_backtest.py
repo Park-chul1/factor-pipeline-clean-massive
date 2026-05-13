@@ -27,6 +27,12 @@ def parse_args():
     p.add_argument("--gross", type=float, default=2.0, help="2.0 means long +1 and short -1")
     p.add_argument("--min-names-per-side", type=int, default=5)
     p.add_argument("--min-return-coverage", type=float, default=0.80)
+    p.add_argument(
+        "--max-abs-return",
+        type=float,
+        default=1.0,
+        help="Drop realized stock returns whose absolute value exceeds this threshold; use <=0 to disable",
+    )
     p.add_argument("--save-arrays", action="store_true", help="Also save scores.npy and positions.npy")
     return p.parse_args()
 
@@ -58,6 +64,7 @@ def main():
         gross=args.gross,
         min_names_per_side=args.min_names_per_side,
         min_return_coverage=args.min_return_coverage,
+        max_abs_return=args.max_abs_return if args.max_abs_return > 0 else None,
     )
 
     daily = result["daily"].copy()

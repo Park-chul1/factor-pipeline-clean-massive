@@ -62,8 +62,17 @@ def build_tradable_mask(
     return mask.astype(bool)
 
 
-def compute_forward_returns(adj_close: pd.DataFrame, horizon: int = 1) -> pd.DataFrame:
-    return adj_close.shift(-horizon) / adj_close - 1.0
+def compute_forward_returns(
+    adj_close: pd.DataFrame,
+    horizon: int = 1,
+    max_abs_return: float | None = None,
+) -> pd.DataFrame:
+    returns = adj_close.shift(-horizon) / adj_close - 1.0
+    if max_abs_return is not None:
+        if max_abs_return <= 0:
+            raise ValueError("max_abs_return must be positive")
+        returns = returns.mask(returns.abs() > max_abs_return)
+    return returns
 
 
 def finite_ratio(x) -> float:

@@ -18,7 +18,7 @@ except ImportError as exc:
 
 def parse_args():
     p = argparse.ArgumentParser(description="Connect to IBKR TWS demo account and show account info")
-    p.add_argument("--host", default="127.0.0.1", help="TWS/Gateway host")
+    p.add_argument("--host", default="172.30.1.41", help="TWS/Gateway host")
     p.add_argument("--port", type=int, default=7497, help="TWS demo socket port")
     p.add_argument("--client-id", type=int, default=1, help="IB API client ID")
     p.add_argument("--timeout", type=float, default=10.0, help="Connection timeout in seconds")

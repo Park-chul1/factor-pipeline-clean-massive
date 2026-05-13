@@ -1,5 +1,6 @@
 import pandas as pd
 
+from factor_pipeline.backtest import portfolio_returns
 from factor_pipeline.price_volume_factors import build_price_volume_factors
 from factor_pipeline.panel import build_tradable_mask, compute_forward_returns
 
@@ -22,6 +23,22 @@ def test_forward_returns_are_future_returns():
     assert abs(r.iloc[0, 0] - 0.10) < 1e-12
     assert abs(r.iloc[1, 0] - 0.10) < 1e-12
     assert pd.isna(r.iloc[2, 0])
+
+
+def test_forward_returns_can_drop_outliers():
+    idx = pd.date_range("2024-01-01", periods=3, freq="B")
+    close = pd.DataFrame({"A": [1.0, 50.0, 51.0]}, index=idx)
+    r = compute_forward_returns(close, horizon=1, max_abs_return=1.0)
+    assert pd.isna(r.iloc[0, 0])
+    assert abs(r.iloc[1, 0] - 0.02) < 1e-12
+
+
+def test_portfolio_returns_drop_outliers_before_coverage_check():
+    weights = pd.DataFrame([[0.5, -0.5]]).to_numpy(dtype=float)
+    returns = pd.DataFrame([[20.0, -0.02]]).to_numpy(dtype=float)
+    port, coverage = portfolio_returns(weights, returns, min_return_coverage=0.5, max_abs_return=1.0)
+    assert coverage[0] == 0.5
+    assert abs(port[0] - 0.01) < 1e-12
 
 
 def test_build_tradable_mask_requires_positive_price_and_volume():

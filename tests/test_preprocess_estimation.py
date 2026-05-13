@@ -116,6 +116,39 @@ def test_auto_ridge_estimation_returns_diagnostics_with_qr_solver():
     assert (diag["n_observations"] == N).all()
 
 
+def test_parallel_estimation_matches_serial():
+    rng = np.random.default_rng(19)
+    T, N, K = 8, 30, 5
+    X = rng.normal(size=(T, N, K))
+    beta = rng.normal(size=K)
+    r = np.einsum("tnk,k->tn", X, beta) + rng.normal(scale=0.03, size=(T, N))
+
+    serial, serial_diag = estimate_factor_returns(
+        X,
+        r,
+        min_names=10,
+        ridge="auto",
+        ridge_grid=[1e-6, 1e-4, 1e-2],
+        solver="qr",
+        n_jobs=1,
+        return_diagnostics=True,
+    )
+    parallel, parallel_diag = estimate_factor_returns(
+        X,
+        r,
+        min_names=10,
+        ridge="auto",
+        ridge_grid=[1e-6, 1e-4, 1e-2],
+        solver="qr",
+        n_jobs=3,
+        return_diagnostics=True,
+    )
+
+    np.testing.assert_allclose(parallel, serial, equal_nan=True)
+    np.testing.assert_allclose(parallel_diag["selected_ridge"], serial_diag["selected_ridge"])
+    assert parallel_diag["n_jobs"].eq(3).all()
+
+
 def test_estimation_respects_universe_mask():
     X = np.ones((1, 3, 1), dtype=float)
     r = np.array([[0.01, 0.02, 0.03]], dtype=float)

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -26,7 +27,7 @@ def parse_args():
     p = argparse.ArgumentParser(
         description="Live IBKR portfolio rebalancer using saved pipeline target weights"
     )
-    p.add_argument("--host", default="127.0.0.1", help="TWS/Gateway host")
+    p.add_argument("--host", default="172.30.1.41", help="TWS/Gateway host")
     p.add_argument("--port", type=int, default=7497, help="TWS demo socket port")
     p.add_argument("--client-id", type=int, default=1, help="IB API client ID")
     p.add_argument("--account", default=None, help="Optional IB account to filter account values")
@@ -42,6 +43,8 @@ def parse_args():
     p.add_argument("--top-n", type=int, default=50, help="Limit live trading to top N target positions by notional size")
     p.add_argument("--max-symbol-pct", type=float, default=0.02, help="Maximum equity fraction for any single symbol")
     p.add_argument("--max-side-pct", type=float, default=0.60, help="Maximum total long or short exposure as a fraction of equity")
+    p.add_argument("--max-signal-age-days", type=int, default=5, help="Block live orders when the selected pipeline date is older than this many calendar days")
+    p.add_argument("--allow-stale-signals", action="store_true", help="Allow live orders even when the selected pipeline date is stale")
     p.add_argument("--dry-run", action="store_true", help="Do not send live orders; only print order plan")
     p.add_argument("--auto-rebalance", action="store_true", help="Place live orders to rebalance current positions toward target weights")
     p.add_argument("--stream-interval", type=float, default=30.0, help="Seconds between live market data refreshes")
@@ -214,6 +217,21 @@ def load_pipeline_target_weights(
         gross=gross,
     )
     return tickers, weights
+
+
+def pipeline_signal_date(path: Path, date_index: int = -1) -> datetime.date | None:
+    dates_path = path / "dates.csv"
+    if not dates_path.exists():
+        return None
+    dates = pd.read_csv(dates_path, usecols=["date"]).squeeze("columns")
+    if dates.empty:
+        return None
+    idx = date_index
+    if idx < 0:
+        idx = len(dates) + idx
+    if not (0 <= idx < len(dates)):
+        raise IndexError(f"date_index {date_index} out of range for dates length {len(dates)}")
+    return pd.to_datetime(dates.iloc[idx]).date()
 
 
 def compute_target_dollars(weights: np.ndarray, total_equity: float, gross: float = 2.0) -> np.ndarray:
@@ -389,7 +407,7 @@ def main():
     equity = summary.get("equity")
     cash = summary.get("cash")
     print("--- account summary ---")
-    print(values)
+    print(f"account_values_count={len(values)}")
     print(f"equity={equity}, cash={cash}")
 
     stream_symbols: list[str] = []
@@ -398,6 +416,32 @@ def main():
             raise RuntimeError("Unable to read equity from IB account values")
 
         pipeline_path = Path(args.load_pipeline)
+        signal_date = pipeline_signal_date(pipeline_path, args.date_index)
+        if signal_date is None:
+            print("WARN: pipeline has no dates.csv; cannot verify signal freshness")
+        else:
+            signal_age_days = (datetime.now().date() - signal_date).days
+            print(f"pipeline signal date={signal_date} age_days={signal_age_days}")
+            if signal_age_days > args.max_signal_age_days:
+                print(f"WARN: signal is older than --max-signal-age-days={args.max_signal_age_days}")
+
+        if args.auto_rebalance and not args.dry_run and os.getenv("ALLOW_LEGACY_INTRADAY_REBALANCE") != "1":
+            raise RuntimeError(
+                "Legacy IBKR auto-rebalance is disabled under the daily close-to-next-open convention. "
+                "Use scripts/run_next_open_execution_job.py with an after-close order plan, or set "
+                "ALLOW_LEGACY_INTRADAY_REBALANCE=1 only for explicit legacy diagnostics."
+            )
+
+        if args.auto_rebalance and not args.dry_run and not args.allow_stale_signals:
+            if signal_date is None:
+                raise RuntimeError("Refusing live orders because pipeline signal date is unavailable. Use --allow-stale-signals to override.")
+            signal_age_days = (datetime.now().date() - signal_date).days
+            if signal_age_days > args.max_signal_age_days:
+                raise RuntimeError(
+                    f"Refusing live orders because signal date {signal_date} is {signal_age_days} days old. "
+                    "Refresh pipeline data or use --allow-stale-signals to override."
+                )
+
         tickers, weights = load_pipeline_target_weights(
             pipeline_path,
             args.date_index,

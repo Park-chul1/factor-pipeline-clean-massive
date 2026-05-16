@@ -1,0 +1,6 @@
+order_status,orders,tickers,notional,estimated_total_cost
+Filled,275,275,620023.5211,186.00705632999998
+Submitted,198,198,421393.3354,126.41800062
+Inactive,6,6,22984.66,6.895398
+PreSubmitted,3,3,6290.550000000001,1.887165
+Cancelled,2,2,6816.2,2.04486

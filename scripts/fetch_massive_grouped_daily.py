@@ -16,7 +16,7 @@ from factor_pipeline.massive_client import MassiveClient, download_grouped_daily
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Fetch Massive grouped daily bars and append them to a parquet cache")
-    p.add_argument("--base-bars", required=True, help="Existing grouped daily parquet")
+    p.add_argument("--base-bars", default=None, help="Optional existing grouped daily parquet to append/update")
     p.add_argument("--out-bars", required=True, help="Combined grouped daily parquet output")
     p.add_argument("--start-date", required=True)
     p.add_argument("--end-date", required=True)
@@ -25,6 +25,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-api-cache", action="store_true")
     p.add_argument("--tickers-csv", default=None, help="Optional ticker universe filter")
     p.add_argument("--active-only", action="store_true", help="If tickers-csv has active, keep active rows only")
+    p.add_argument("--unadjusted", action="store_true", help="Fetch raw, unadjusted OHLCV bars for execution and price/liquidity filters")
     return p.parse_args()
 
 
@@ -41,7 +42,7 @@ def load_ticker_filter(path: str | None, active_only: bool) -> set[str] | None:
 
 def main() -> None:
     args = parse_args()
-    base_path = Path(args.base_bars)
+    base_path = Path(args.base_bars) if args.base_bars else None
     out_path = Path(args.out_bars)
     client = MassiveClient(
         get_api_key(),
@@ -50,8 +51,9 @@ def main() -> None:
         use_cache=not args.no_api_cache,
     )
 
-    print(f"fetching Massive grouped daily {args.start_date}..{args.end_date}", flush=True)
-    fetched = download_grouped_daily_range(client, args.start_date, args.end_date)
+    adjusted = not args.unadjusted
+    print(f"fetching Massive grouped daily {args.start_date}..{args.end_date} adjusted={adjusted}", flush=True)
+    fetched = download_grouped_daily_range(client, args.start_date, args.end_date, adjusted=adjusted)
     ticker_filter = load_ticker_filter(args.tickers_csv, args.active_only)
     if ticker_filter is not None and not fetched.empty:
         fetched = fetched[fetched["ticker"].astype(str).isin(ticker_filter)].copy()
@@ -60,8 +62,10 @@ def main() -> None:
         flush=True,
     )
 
-    base = pd.read_parquet(base_path)
+    base = pd.read_parquet(base_path) if base_path is not None and base_path.exists() else pd.DataFrame()
     combined = pd.concat([base, fetched], ignore_index=True) if not fetched.empty else base
+    if combined.empty:
+        raise RuntimeError("No bars available from base or fetch; refusing to write empty cache")
     combined["date"] = pd.to_datetime(combined["date"]).dt.normalize()
     combined = (
         combined.drop_duplicates(["date", "ticker"], keep="last")

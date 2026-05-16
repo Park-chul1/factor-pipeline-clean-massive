@@ -9,6 +9,7 @@ from live.config import LiveConfig
 from live.data import load_recent_history, update_local_bar_cache
 from live.execution import generate_orders
 from live.features import build_latest_exposures
+from live.paper_order_submitter import _apply_min_price_to_targets
 from live.portfolio import compute_turnover, construct_target_portfolio
 from live.risk import assert_demo_safety
 
@@ -117,6 +118,13 @@ def test_order_generation_from_current_to_target():
     assert by_ticker["A"].quantity == 15
     assert by_ticker["B"].side == "SELL"
     assert by_ticker["B"].quantity == 5
+
+
+def test_paper_submitter_drops_low_price_targets_before_order_generation():
+    target = pd.Series({"A": 0.01, "B": -0.01, "C": 0.02})
+    prices = pd.Series({"A": 4.99, "B": 5.00})
+    filtered = _apply_min_price_to_targets(target, prices, min_price=5.0)
+    assert filtered.to_dict() == {"B": -0.01, "C": 0.02}
 
 
 def test_nan_exposure_handling():

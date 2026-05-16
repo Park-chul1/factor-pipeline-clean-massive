@@ -9,8 +9,10 @@ import pytest
 from backtests.close_to_next_open_daily import (
     DailyBacktestConfig,
     REQUIRED_REPORT_FILES,
+    apply_dynamic_risk_controls,
     _rank_weights_one_day,
     compute_alpha_and_contributions,
+    portfolio_pnl,
     run_close_to_next_open_backtest,
     write_daily_report,
 )
@@ -122,6 +124,140 @@ def test_cost_adjusted_alpha_threshold_blocks_weak_signals(tmp_path):
     assert target[2] == 0
     assert info["cost_adjusted_alpha_threshold"] == pytest.approx(0.0008)
     assert info["filtered_alpha_threshold"] == 2
+
+
+def test_min_price_filter_blocks_low_price_names():
+    cfg = DailyBacktestConfig(
+        min_names_per_side=1,
+        min_price=5.0,
+        max_position_weight=1.0,
+        gross_exposure=2.0,
+        transaction_cost_bps=0.0,
+        slippage_bps=0.0,
+        min_net_alpha_after_cost_bps=0.0,
+    )
+    alpha = np.array([-0.04, -0.03, 0.03, 0.04])
+    price = np.array([4.99, 5.00, 4.50, 6.00])
+
+    target, info = _rank_weights_one_day(
+        alpha,
+        np.ones_like(alpha, dtype=bool),
+        np.full_like(alpha, 1_000_000.0),
+        cfg,
+        price=price,
+    )
+
+    assert target[0] == 0
+    assert target[2] == 0
+    assert target[1] < 0
+    assert target[3] > 0
+    assert info["filtered_price"] == 2
+
+
+def test_net_exposure_limit_reduces_long_only_book():
+    cfg = DailyBacktestConfig(
+        min_names_per_side=1,
+        allow_short=False,
+        max_position_weight=1.0,
+        gross_exposure=1.0,
+        max_net_exposure=0.20,
+        transaction_cost_bps=0.0,
+        slippage_bps=0.0,
+    )
+    alpha = np.array([0.01, 0.02, 0.03, 0.04])
+    target, _info = _rank_weights_one_day(alpha, np.ones_like(alpha, dtype=bool), None, cfg)
+    assert abs(target.sum()) <= cfg.max_net_exposure + 1e-12
+    assert np.abs(target).max() <= cfg.max_position_weight + 1e-12
+
+
+def test_dynamic_risk_controls_scale_down_on_high_var():
+    weights = np.tile(np.array([0.5, -0.5]), (5, 1))
+    realized = np.array([
+        [0.10, -0.10],
+        [-0.10, 0.10],
+        [0.10, -0.10],
+        [-0.10, 0.10],
+        [0.10, -0.10],
+    ])
+    cfg = DailyBacktestConfig(
+        max_daily_var=0.02,
+        var_lookback_days=2,
+        var_confidence=0.95,
+        volatility_target_annual=None,
+        max_drawdown_limit=None,
+        transaction_cost_bps=0.0,
+        slippage_bps=0.0,
+    )
+    adjusted, controls = apply_dynamic_risk_controls(weights, realized, cfg)
+    assert controls["risk_scale"].iloc[3] < 1.0
+    assert np.abs(adjusted[3]).sum() < np.abs(weights[3]).sum()
+
+
+def test_turnover_penalty_is_deducted_from_returns():
+    weights = np.array([[0.5, -0.5], [0.0, 0.0]])
+    realized = np.zeros_like(weights)
+    cfg = DailyBacktestConfig(transaction_cost_bps=0.0, slippage_bps=0.0, turnover_penalty_bps=10.0)
+    returns, turnover, costs, penalty = portfolio_pnl(weights, realized, cfg)
+    assert turnover[0] == pytest.approx(0.5)
+    assert costs[0] == 0
+    assert penalty[0] == pytest.approx(0.001)
+    assert returns[0] == pytest.approx(-0.001)
+
+
+def test_transaction_cost_uses_full_traded_notional():
+    weights = np.array([[0.5, -0.5], [0.0, 0.0]])
+    realized = np.zeros_like(weights)
+    cfg = DailyBacktestConfig(transaction_cost_bps=10.0, slippage_bps=0.0, turnover_penalty_bps=0.0)
+    returns, turnover, costs, penalty = portfolio_pnl(weights, realized, cfg)
+    assert turnover[0] == pytest.approx(0.5)
+    assert costs[0] == pytest.approx(0.001)
+    assert penalty[0] == 0
+    assert returns[0] == pytest.approx(-0.001)
+
+
+def test_execution_bars_path_drives_min_price_filter(tmp_path):
+    input_dir, bars_path, _dates, _tickers, *_ = _write_fixture(tmp_path)
+    raw = pd.read_parquet(bars_path)
+    raw.loc[raw["ticker"].eq("T09"), ["open", "close"]] = 4.0
+    raw_path = tmp_path / "raw_bars.parquet"
+    raw.to_parquet(raw_path, index=False)
+    cfg = DailyBacktestConfig(
+        input_dir=input_dir,
+        out_dir=tmp_path / "bt",
+        daily_bars_path=bars_path,
+        execution_bars_path=raw_path,
+        reports_dir=tmp_path / "reports",
+        min_names_per_side=1,
+        max_positions_long=1,
+        max_positions_short=1,
+        max_position_weight=1.0,
+        gross_exposure=2.0,
+        forecast_method="latest",
+        min_periods=1,
+        min_price=5.0,
+        transaction_cost_bps=0.0,
+        slippage_bps=0.0,
+        min_net_alpha_after_cost_bps=0.0,
+    )
+    result = run_close_to_next_open_backtest(cfg)
+    t09 = result.target_positions[result.target_positions["ticker"].eq("T09")]
+    assert t09["target_weight"].max() == 0
+
+
+def test_missing_exit_price_raises_for_active_position(tmp_path):
+    cfg = _cfg(tmp_path)
+    tickers = pd.read_csv(cfg.input_dir / "tickers.csv")
+    tickers["delisted_utc"] = np.where(tickers["ticker"].eq("T09"), "2024-01-05", "")
+    tickers.to_csv(cfg.input_dir / "tickers.csv", index=False)
+    bars = pd.read_parquet(cfg.daily_bars_path)
+    dates = sorted(pd.to_datetime(bars["date"]).dt.normalize().unique())
+    bars.loc[
+        pd.to_datetime(bars["date"]).dt.normalize().eq(pd.Timestamp(dates[4])) & bars["ticker"].eq("T09"),
+        "open",
+    ] = np.nan
+    bars.to_parquet(cfg.daily_bars_path, index=False)
+    with pytest.raises(RuntimeError, match="Missing exit price"):
+        run_close_to_next_open_backtest(cfg)
 
 
 def test_reports_are_generated_and_reasons_present(tmp_path):

@@ -1,0 +1,657 @@
+ticker,active_position_days,name,active,delisted_utc
+MULN,304,"Mullen Automotive, Inc. Common Stock",False,2025-07-28T00:00:00Z
+ATXS,192,"Astria Therapeutics, Inc. Common Stock",False,2026-01-26T00:00:00Z
+TERN,190,"Terns Pharmaceuticals, Inc. Common Stock",False,2026-05-06T00:00:00Z
+LAZR,182,"Luminar Technologies, Inc. Class A Common Stock",False,2025-12-24T00:00:00Z
+FTEL,173,Fitell Corporation Class A Ordinary Shares,False,2026-03-12T00:00:00Z
+RAPT,172,"RAPT Therapeutics, Inc. Common Stock",False,2026-03-04T00:00:00Z
+MAXN,170,"Maxeon Solar Technologies, Ltd. Ordinary Shares",False,2026-05-01T00:00:00Z
+GOEV,147,Canoo Inc. Class A Common Stock,False,2025-01-29T00:00:00Z
+ETNB,145,"89bio, Inc. Common Stock",False,2025-10-31T00:00:00Z
+NUKK,142,Nukkleus Inc. Common Stock,False,2026-02-09T00:00:00Z
+SMLR,141,"Semler Scientific, Inc.",False,2026-01-20T00:00:00Z
+ZIMV,122,ZimVie Inc. Common Stock,False,2025-10-21T00:00:00Z
+LBPH,120,"Longboard Pharmaceuticals, Inc. Common Stock",False,2024-12-03T00:00:00Z
+CRKN,114,Crown Electrokinetics Corp. Common Stock,False,2025-03-05T00:00:00Z
+IRBT,109,iRobot Corporation,False,2025-12-22T00:00:00Z
+CDTX,109,"Cidara Therapeutics, Inc.",False,2026-01-08T00:00:00Z
+FFIE,108,Faraday Future Intelligent Electric Inc. Common Stock,False,
+HSII,108,Heidrick & Struggles Inc,False,2025-12-11T00:00:00Z
+BLUE,107,"bluebird bio, Inc. Common Stock",False,2025-06-03T00:00:00Z
+TRML,106,"Tourmaline Bio, Inc. Common Stock",False,2025-10-29T00:00:00Z
+MRSN,105,"Mersana Therapeutics, Inc. Common Stock",False,2026-01-07T00:00:00Z
+MODV,105,ModivCare Inc. Common Stock,False,2025-08-28T00:00:00Z
+ATSG,101,"Air Transport Services Group, Inc.",False,2025-04-14T00:00:00Z
+VLCN,98,"Volcon, Inc. Common stock",False,2025-07-31T00:00:00Z
+SAVA,97,"Cassava Sciences, Inc.",False,2026-03-11T00:00:00Z
+SWTX,96,"SpringWorks Therapeutics, Inc. Common Stock",False,2025-07-02T00:00:00Z
+SYTA,96,"Siyata Mobile, Inc.",False,2025-10-07T00:00:00Z
+IGMS,95,"IGM Biosciences, Inc. Common Stock",False,2025-08-15T00:00:00Z
+YMAB,94,"Y-mAbs Therapeutics, Inc. Common Stock",False,2025-09-17T00:00:00Z
+SAGE,94,"Sage Therapeutics, Inc",False,2025-08-01T00:00:00Z
+IVP,89,"Inspire Veterinary Partners, Inc. Class A Common Stock",False,2026-01-21T00:00:00Z
+STKL,89,"SunOpta, Inc.",False,2026-05-04T00:00:00Z
+WLGS,89,"Wang & Lee Group, Inc. Ordinary Shares",False,2025-08-26T00:00:00Z
+MNMD,88,Mind Medicine (MindMed) Inc. Common Shares,False,2026-01-15T00:00:00Z
+FGEN,87,"FibroGen, Inc",False,2026-01-08T00:00:00Z
+PDCO,86,"Patterson Companies, Inc.",False,2025-04-21T00:00:00Z
+VERV,85,"Verve Therapeutics, Inc. Common Stock",False,2025-07-28T00:00:00Z
+CERO,85,"CERo Therapeutics Holdings, Inc. Common Stock",False,2025-10-31T00:00:00Z
+DAWN,82,"Day One Biopharmaceuticals, Inc. Common Stock",False,2026-04-24T00:00:00Z
+SPTN,82,SpartanNash Company,False,2025-09-23T00:00:00Z
+PINC,82,"Premier, Inc. Class A",False,2025-11-26T00:00:00Z
+THRD,81,"Third Harmonic Bio, Inc. Common Stock",False,2025-07-31T00:00:00Z
+PLL,79,Piedmont Lithium Inc. Common Stock,False,2025-09-02T00:00:00Z
+AMED,78,Amedisys Inc,False,2025-08-15T00:00:00Z
+VERB,77,"Verb Technology Company, Inc. Common Stock",False,2025-09-02T00:00:00Z
+MORF,76,"Morphic Holding, Inc. Common Stock",False,2024-08-19T04:00:00Z
+AMRK,76,"A-Mark Precious Metals, Inc.",False,2025-12-02T00:00:00Z
+MIGI,75,"Big Digital Energy, Inc. Common Stock",False,2026-04-30T00:00:00Z
+AKRO,75,"Akero Therapeutics, Inc. Common Stock",False,2025-12-10T00:00:00Z
+EYEN,75,"Eyenovia, Inc. Common Stock",False,2025-07-03T00:00:00Z
+ODP,74,The ODP Corporation Common Stock,False,2025-12-11T00:00:00Z
+BPMC,74,Blueprint Medicines Corporation,False,2025-07-21T00:00:00Z
+VTYX,73,"Ventyx Biosciences, Inc. Common Stock",False,2026-03-05T00:00:00Z
+LGMK,73,"LogicMark, Inc. Common Stock (NV)",False,2025-06-02T00:00:00Z
+RDFN,72,Redfin Corporation Common Stock,False,2025-07-02T00:00:00Z
+RDUS,72,"Radius Recycling, Inc. Class A Common Stock",False,2025-07-14T00:00:00Z
+SRDX,71,"Surmodics, Inc. Common Stock",False,2025-11-20T00:00:00Z
+PEGY,71,Pineapple Energy Inc. Common Stock,False,2024-11-19T05:00:00Z
+ITOS,70,"iTeos Therapeutics, Inc. Common Stock",False,2025-09-02T00:00:00Z
+AVTE,69,"Aerovate Therapeutics, Inc. Common Stock",False,2025-04-29T00:00:00Z
+BASE,69,"Couchbase, Inc. Common Stock",False,2025-09-25T00:00:00Z
+FYBR,69,"Frontier Communications Parent, Inc. Common Stock",False,2026-01-21T00:00:00Z
+COMM,69,"CommScope Holding Company, Inc.",False,2026-01-14T00:00:00Z
+AVDL,67,Avadel Pharmaceuticals plc Ordinary Share,False,2026-02-13T00:00:00Z
+PYCR,67,"Paycor HCM, Inc. Common Stock",False,2025-04-15T00:00:00Z
+DGLY,67,"Digital Ally, Inc. Common Stock",False,2026-01-08T00:00:00Z
+GTI,66,Graphjet Technology Class A Ordinary Shares,False,2025-11-13T00:00:00Z
+ALTR,65,Altair Engineering Inc. Class A Common Stock,False,2025-03-27T00:00:00Z
+CEP,65,"Cantor Equity Partners, Inc. Class A Ordinary Shares",False,2025-12-09T00:00:00Z
+JFBR,64,Jeffs' Brands Ltd Ordinary Shares,False,2026-03-31T00:00:00Z
+APDN,64,"Applied DNA Sciences, Inc.",False,2025-10-07T00:00:00Z
+ADD,64,"Color Star Technology Co., Ltd. Class A Ordinary Shares",False,2025-08-22T00:00:00Z
+LITM,64,Snow Lake Resources Ltd. Common Shares,False,2026-03-16T00:00:00Z
+CDMO,63,"Avid Bioservices, Inc. Common Stock",False,2025-02-06T00:00:00Z
+ADVM,62,"Adverum Biotechnologies, Inc. Common Stock",False,2025-12-10T00:00:00Z
+SISI,62,"Shineco, Inc. Common Stock",False,2025-10-07T00:00:00Z
+STAI,62,ScanTech AI Systems Inc. Common stock,False,2026-02-10T00:00:00Z
+RSLS,60,"ReShape Lifesciences, Inc. Common Stock",False,2025-08-15T00:00:00Z
+BHAT,60,Blue Hat Interactive Entertainment Technology Ordinary Shares,False,2026-03-16T00:00:00Z
+RVNC,59,"Revance Therapeutics, Inc.",False,2025-02-07T00:00:00Z
+HA,59,"Hawaiian Holdings, Inc.",False,2024-09-19T04:00:00Z
+GRYP,59,"Gryphon Digital Mining, Inc Common Stock",False,2025-09-05T00:00:00Z
+TZUP,59,Thumzup Media Corporation Common Stock,False,2025-12-16T00:00:00Z
+HEES,58,"H&E Equipment Services, Inc.",False,2025-06-03T00:00:00Z
+VMEO,58,"Vimeo, Inc. Common Stock",False,2025-11-25T00:00:00Z
+ZEUS,57,"Olympic Steel, Inc.",False,2026-02-17T00:00:00Z
+PLYA,57,Playa Hotels & Resorts N.V. Ordinary Shares,False,
+ASNS,57,"Actelis Networks, Inc. Common Stock",False,2026-04-10T00:00:00Z
+HMST,56,"HomeStreet, Inc.",False,2025-09-02T00:00:00Z
+APLT,55,"Applied Therapeutics, Inc. Common Stock",False,2026-02-04T00:00:00Z
+ME,54,23andMe Holding Co. Class A Common Stock,False,2025-03-31T00:00:00Z
+WBA,54,"Walgreens Boots Alliance, Inc",False,2025-08-29T00:00:00Z
+CLEU,54,China Liberal Education Holdings Limited Ordinary Shares,False,2025-06-03T00:00:00Z
+SPNS,54,Sapiens International Corporation N.V. Common Shares (Cayman Islands),False,2025-12-18T00:00:00Z
+FUSN,53,Fusion Pharmaceuticals Inc. Common Shares,False,2024-06-05T04:00:00Z
+ZCAR,53,"Zoomcar Holdings, Inc. Common Stock",False,2025-05-08T00:00:00Z
+HONE,53,"HarborOne Bancorp, Inc. Common Stock",False,2025-11-03T00:00:00Z
+MFH,53,Mercurity Fintech Holding Inc. Ordinary Shares,False,2025-11-13T00:00:00Z
+SWIN,52,Solowin Holdings Class A Ordinary Share,False,2025-10-10T00:00:00Z
+FOLD,52,"Amicus Therapeutics, Inc",False,2026-04-28T00:00:00Z
+GLTO,52,"Galecto, Inc. Common Stock",False,2026-03-10T00:00:00Z
+NKLA,51,Nikola Corporation Common Stock,False,2025-02-26T00:00:00Z
+HOLX,51,Hologic Inc,False,2026-04-08T00:00:00Z
+INZY,50,"Inozyme Pharma, Inc. Common Stock",False,2025-07-02T00:00:00Z
+DHIL,50,Diamond Hill Investment Group,False,2026-04-23T00:00:00Z
+PBPB,49,Potbelly Corporation Common Stock,False,2025-10-24T00:00:00Z
+MRUS,49,Merus N.V. Common Shares,False,2025-12-31T00:00:00Z
+XTKG,49,"X3 Holdings Co., Ltd. Class A Ordinary Shares",False,2026-04-02T00:00:00Z
+AGBA,48,AGBA Group Holding Limited Ordinary Share,False,2024-10-16T04:00:00Z
+HAYN,47,"Haynes International, Inc.",False,2024-11-22T05:00:00Z
+HTBK,47,Heritage Commerce Corp,False,2026-04-20T00:00:00Z
+VRNT,47,Verint Systems Inc,False,2025-11-28T00:00:00Z
+USAP,47,Universal Stainless & Alloy,False,2025-01-24T00:00:00Z
+VVPR,47,VivoPower International PLC,False,2026-03-16T00:00:00Z
+DVAX,47,Dynavax Technologies Corporation,False,2026-02-11T00:00:00Z
+NITO,47,"N2OFF, Inc. Common Stock",False,2026-02-26T00:00:00Z
+FARO,47,Faro Technologies Inc,False,2025-07-22T00:00:00Z
+NXU,46,"Nxu, Inc. Class A Common Stock",False,2025-04-10T00:00:00Z
+AGFY,46,Agrify Corporation Common Stock,False,2025-09-02T00:00:00Z
+ACLX,46,"Arcellx, Inc. Common Stock",False,2026-04-29T00:00:00Z
+SRCL,45,Stericycle Inc,False,2024-11-05T05:00:00Z
+EXAS,45,Exact Sciences Corp,False,2026-03-24T00:00:00Z
+AXNX,44,"Axonics, Inc. Common Stock",False,2024-11-18T05:00:00Z
+ATRI,44,Atrion Corp,False,2024-08-22T04:00:00Z
+NARI,43,"Inari Medical, Inc. Common Stock",False,2025-02-20T00:00:00Z
+NWLI,43,"National Western Life Group, Inc. Class A",False,2024-07-10T04:00:00Z
+SILK,43,"Silk Road Medical, Inc. Common Stock",False,2024-09-18T04:00:00Z
+SNCR,43,Synchronoss Technologies Inc Common Stock,False,2026-02-17T00:00:00Z
+ITCI,43,Intra-Cellular Therapies Inc.,False,2025-04-03T00:00:00Z
+WINT,43,"Windtree Therapeutics, Inc. Common Stock",False,2025-08-21T00:00:00Z
+ROIC,43,Retail Opportunity Investments Corp.,False,2025-02-13T00:00:00Z
+ZSPC,43,"zSpace, Inc. Common stock",False,2026-04-28T00:00:00Z
+CBAY,42,Cymabay Therapeutics,False,2024-03-25T04:00:00Z
+KTRA,42,"Kintara Therapeutics, Inc. Common Stock",False,2024-10-18T04:00:00Z
+ACCD,42,"Accolade, Inc. Common Stock",False,2025-04-09T00:00:00Z
+NETD,42,Nabors Energy Transition Corp. II Class A Ordinary Shares,False,2025-11-26T00:00:00Z
+AVDX,42,"AvidXchange Holdings, Inc. Common Stock",False,2025-10-16T00:00:00Z
+SCRM,41,Screaming Eagle Acquisition Corp. Class A Ordinary Shares,False,2024-05-14T04:00:00Z
+AGRI,41,AgriFORCE Growing Systems Ltd. Common Shares,False,2025-11-13T00:00:00Z
+MACK,40,"Merrimack Pharmaceuticals, Inc.",False,2024-05-20T04:00:00Z
+ESGR,40,Enstar Group,False,2025-07-03T00:00:00Z
+PGHL,40,Primega Group Holdings Limited Ordinary Shares,False,
+SLRN,39,"ACELYRIN, INC. Common Stock",False,2025-05-22T00:00:00Z
+ZI,39,ZoomInfo Technologies Inc Common Stock,False,
+PRTG,39,Portage Biotech Inc. Common Stock,False,2025-09-04T00:00:00Z
+PHH,39,"Park Ha Biological Technology Co., Ltd. Ordinary Shares",False,2025-10-28T00:00:00Z
+PTVE,38,Pactiv Evergreen Inc. Common stock,False,2025-04-02T00:00:00Z
+KWE,38,KWESST Micro Systems Inc. Common Stock,False,
+CDXC,38,ChromaDex Corporation,False,
+GSRT,38,GSR III Acquisition Corp. Ordinary Shares,False,2025-10-10T00:00:00Z
+HLVX,37,"HilleVax, Inc. Common Stock",False,2025-09-18T00:00:00Z
+SSNT,37,"SilverSun Technologies, Inc. Common Stock",False,2024-06-06T04:00:00Z
+CFLT,37,"Confluent, Inc. Class A Common Stock",False,2026-03-18T00:00:00Z
+HCP,37,"HashiCorp, Inc. Class A Common Stock",False,2025-02-28T00:00:00Z
+LSEA,37,Landsea Homes Corporation Common Stock,False,
+CHUY,37,"Chuy's Holdings, Inc. Common Stock",False,2024-10-14T04:00:00Z
+NISN,37,"NiSun International Enterprise Development Group Co., Ltd. Class A Common Shares",False,2026-02-12T00:00:00Z
+COEP,37,Coeptis Therapeutics Holdings Inc. Common Stock,False,2026-04-27T00:00:00Z
+EPWK,37,EPWK Holdings Ltd. Class A Ordinary Shares,False,2025-12-23T00:00:00Z
+LYRA,36,"Lyra Therapeutics, Inc. Common Stock",False,2026-03-18T00:00:00Z
+BIGC,36,"BigCommerce Holdings, Inc. Series 1 Common Stock",False,2025-08-01T00:00:00Z
+WKME,36,WalkMe Ltd. Ordinary Shares,False,2024-09-13T04:00:00Z
+SPGC,36,"Sacks Parente Golf, Inc. Common Stock",False,2025-03-17T00:00:00Z
+GLYC,35,"GlycoMimetics, Inc.",False,
+SDIG,35,"Stronghold Digital Mining, Inc. Class A Common Stock",False,2025-03-17T00:00:00Z
+CRGX,35,"CARGO Therapeutics, Inc. Common Stock",False,2025-08-20T00:00:00Z
+CERE,35,"Cerevel Therapeutics Holdings, Inc. Common Stock",False,2024-08-02T04:00:00Z
+SLRX,35,"Salarius Pharmaceuticals, Inc. Common Stock",False,2026-01-08T00:00:00Z
+LOGC,35,ContextLogic Inc. Class A Common Stock,False,2025-06-04T00:00:00Z
+VOXX,34,VOXX International Corporation Class A,False,2025-04-02T00:00:00Z
+PTHL,34,Pheton Holdings Ltd Class A Ordinary Shares,False,2026-01-16T00:00:00Z
+MYNZ,33,Mainz Biomed N.V. Ordinary Shares,False,2026-03-12T00:00:00Z
+ALTS,33,ALT5 Sigma Corporation Common Stock,False,2026-04-29T00:00:00Z
+BLBX,33,Blackboxstocks Inc. Common Stock,False,2026-02-25T00:00:00Z
+MTSR,33,"Metsera, Inc. Common Stock",False,2025-11-14T00:00:00Z
+EPIX,32,ESSA Pharma Inc. Common Stock,False,2025-10-10T00:00:00Z
+ELYM,32,"Eliem Therapeutics, Inc Common Stock",False,
+CCCX,32,Churchill Capital Corp X Class A Ordinary Shares,False,2026-02-17T00:00:00Z
+TWOU,31,"2U, Inc.",False,2024-08-07T04:00:00Z
+MEDS,31,"TRxADE HEALTH, Inc. Common Stock",False,2024-09-23T04:00:00Z
+NLSP,31,NLS Pharmaceutics Ltd. Ordinary Shares,False,2025-10-31T00:00:00Z
+MOFG,31,MidWestOne Financial Group,False,2026-02-17T00:00:00Z
+BSGM,31,"BioSig Technologies, Inc. Common Stock",False,2025-09-12T00:00:00Z
+CFB,30,"CrossFirst Bankshares, Inc. Common Stock",False,2025-03-04T00:00:00Z
+DENN,30,DENNY'S CORP,False,2026-01-20T00:00:00Z
+VRPX,30,"Virpax Pharmaceuticals, Inc. Common Stock",False,2025-04-04T00:00:00Z
+EBTC,30,Enterprise Bancorp Inc.,False,2025-07-02T00:00:00Z
+ETHZ,30,ETHZilla Corporation Common Stock,False,2026-03-02T00:00:00Z
+ALPN,29,"Alpine Immune Sciences, Inc. Common Stock",False,2024-05-21T04:00:00Z
+BCAN,29,Femto Technologies Inc. Common Stock,False,2025-01-28T00:00:00Z
+PRFT,29,Perficient Inc,False,2024-10-03T04:00:00Z
+INFN,29,Infinera Corporation Common Stock,False,2025-03-03T00:00:00Z
+IAS,29,Integral Ad Science Holding Corp. Common Stock,False,2025-12-24T00:00:00Z
+ZAPP,29,Zapp Electric Vehicles Group Limited Ordinary Shares,False,2025-05-20T00:00:00Z
+CMRX,29,"Chimerix, Inc.",False,2025-04-22T00:00:00Z
+LUXH,28,LuxUrban Hotels Inc. Common Stock,False,2025-01-21T00:00:00Z
+NVEE,28,"NV5 Global, Inc. Common Stock",False,2025-08-05T00:00:00Z
+WORX,28,SC WORX Corp,False,2026-04-14T00:00:00Z
+BACQ,28,Inflection Point Acquisition Corp. IV Class A Ordinary Shares,False,2026-03-17T00:00:00Z
+ABP,28,"Abpro Holdings, Inc Common Stock",False,2026-02-23T00:00:00Z
+VIGL,28,"Vigil Neuroscience, Inc. Common Stock",False,2025-08-06T00:00:00Z
+VINC,27,"Vincerx Pharma, Inc. Common Stock",False,2025-04-23T00:00:00Z
+DWAC,27,Digital World Acquisition Corp. Class A Common Stock,False,
+DTCK,27,Davis Commodities Limited Class A Ordinary Shares,False,2026-03-25T00:00:00Z
+BLFY,27,Blue Foundry Bancorp Common Stock,False,2026-04-02T00:00:00Z
+FORD,27,Forward Industries Inc-N Y,False,2025-11-17T00:00:00Z
+DSKE,26,"Daseke, Inc. Common Stock",False,2024-04-02T04:00:00Z
+GBIO,26,Generation Bio Co. Common Stock,False,2026-02-10T00:00:00Z
+ECDA,26,"ECD Automotive Design, Inc. Common Stock",False,2026-01-16T00:00:00Z
+LGTY,26,"Logility Supply Chain Solutions, Inc. Common Stock",False,2025-04-07T00:00:00Z
+UOKA,26,MDJM LTD Class A Ordinary Shares,False,2026-03-20T00:00:00Z
+QVCGA,26,"QVC Group, Inc. Series A Common Stock",False,2026-04-24T00:00:00Z
+ICVX,25,"Icosavax, Inc. Common Stock",False,2024-02-21T05:00:00Z
+NEXI,25,"NexImmune, Inc. Common Stock",False,2024-07-12T04:00:00Z
+SCPH,25,scPharmaceuticals Inc. Common Stock,False,2025-10-08T00:00:00Z
+HARP,25,"Harpoon Therapeutics, Inc. Common Stock",False,2024-03-12T04:00:00Z
+PARA,25,Paramount Global Class B Common Stock,False,2025-08-08T00:00:00Z
+EVBG,25,"Everbridge, Inc. Common Stock",False,2024-07-03T04:00:00Z
+HOND,25,HCM II Acquisition Corp. Class A Ordinary Shares,False,2025-10-29T00:00:00Z
+SP,24,SP Plus Corporation,False,2024-05-17T04:00:00Z
+TIRX,24,TIAN RUIXIANG Holdings Ltd Class A Ordinary Shares,False,2026-03-05T00:00:00Z
+PIXY,24,"ShiftPixy, Inc. Common Stock",False,2024-10-28T04:00:00Z
+GDEN,24,"Golden Entertainment, Inc. Common Stock",False,2026-05-01T00:00:00Z
+CNTM,24,"ConnectM Technology Solutions, Inc. Common Stock",False,2025-05-08T00:00:00Z
+BSLK,24,"Bolt Projects Holdings, Inc. Common Stock",False,2026-01-05T00:00:00Z
+NVFY,24,"Nova Lifestyle, Inc.",False,2025-11-10T00:00:00Z
+EFTR,23,"eFFECTOR Therapeutics, Inc. Common Stock",False,2024-07-03T04:00:00Z
+AMSWA,23,"American Software, Inc.",False,2024-10-02T04:00:00Z
+TIVC,23,"Tivic Health Systems, Inc. Common Stock",False,2026-04-28T00:00:00Z
+PETQ,23,"PetIQ, Inc. Class A Common Stock",False,2024-10-28T04:00:00Z
+FLGC,23,Flora Growth Corp. Common Stock,False,2026-01-29T00:00:00Z
+DOOO,23,BRP Inc. Common Subordinate Voting Shares,False,2025-12-08T00:00:00Z
+FGF,23,Fundamental Global Inc. Common Stock,False,2025-08-11T00:00:00Z
+CYCC,23,"Cyclacel Pharmaceuticals, Inc",False,2025-09-12T00:00:00Z
+FFNW,22,"First Financial Northwest, Inc",False,2025-04-22T00:00:00Z
+NAOV,22,"NanoVibronix, Inc. Common Stock",False,2025-12-12T00:00:00Z
+AZPN,22,Aspen Technology Inc,False,2025-03-13T00:00:00Z
+ULY,21,Urgent.ly Inc. Common Stock,False,2026-03-18T00:00:00Z
+HEPA,21,"Hepion Pharmaceuticals, Inc. Common Stock",False,2025-05-13T00:00:00Z
+SONN,21,"Sonnet BioTherapeutics Holdings, Inc. Common Stock",False,2025-12-03T00:00:00Z
+RGLS,21,Regulus Therapeutics Inc.,False,
+CVAC,21,CureVac N.V. Ordinary Shares,False,2026-01-07T00:00:00Z
+PHLT,21,"Performant Healthcare, Inc. Common Stock",False,2025-10-22T00:00:00Z
+DCPH,20,"Deciphera Pharmaceuticals, Inc. Common Stock",False,2024-06-12T04:00:00Z
+ABL,20,"Abacus Global Management, Inc. Class A Common Stock",False,2025-12-30T00:00:00Z
+LIFW,20,"MSP Recovery, Inc. Class A Common Stock",False,
+JNVR,20,Janover Inc. Common Stock,False,
+JAMF,20,Jamf Holding Corp. Common Stock,False,2026-02-02T00:00:00Z
+SRM,20,"SRM Entertainment, Inc. Common Stock",False,2025-07-17T00:00:00Z
+BINI,20,"Bollinger Innovations, Inc. Common Stock",False,2025-10-13T00:00:00Z
+MGOL,19,MGO Global Inc. Common Stock,False,2025-02-20T00:00:00Z
+SVMH,19,SRIVARU Holding Limited Ordinary Shares,False,2025-01-22T00:00:00Z
+ZVSA,19,"ZyVersa Therapeutics, Inc. Common Stock",False,2025-07-17T00:00:00Z
+SHYF,19,"The Shyft Group, Inc. Common Stock",False,2025-07-02T00:00:00Z
+CYBR,19,CyberArk Software Ltd.,False,2026-02-12T00:00:00Z
+DHAI,19,"DIH Holdings US, Inc. Class A Common Stock",False,2025-11-07T00:00:00Z
+TTSH,19,"Tile Shop Holdings, Inc.",False,2025-12-29T00:00:00Z
+PELI,19,Pelican Acquisition Corporation Ordinary Shares,False,2026-03-26T00:00:00Z
+KRTX,18,"Karuna Therapeutics, Inc. Common Stock",False,2024-03-19T04:00:00Z
+MESA,18,"Mesa Air Group, Inc. Common Stock",False,2025-11-26T00:00:00Z
+OBLG,18,Oblong Inc. Common Stock,False,2025-12-10T00:00:00Z
+GLDD,18,Great Lakes Dredge & Dock Corporation,False,2026-04-02T00:00:00Z
+COOP,18,Mr. Cooper Group Inc. Common Stock,False,2025-10-02T00:00:00Z
+LNKB,18,"LINKBANCORP, Inc. Common Stock",False,2026-05-01T00:00:00Z
+ITI,18,"Iteris, Inc.",False,2024-11-04T05:00:00Z
+SGH,17,"SMART Global Holdings, Inc. Ordinary Shares",False,
+ANSS,17,Ansys Inc,False,2025-07-18T00:00:00Z
+NVEI,17,Nuvei Corporation Subordinate Voting Shares,False,2024-11-18T05:00:00Z
+RILYK,17,"BRC Group Holdings, Inc. 5.50% Senior Notes Due 2026",False,2026-03-30T00:00:00Z
+QLGN,17,"Qualigen Therapeutics, Inc. Common Stock",False,2025-11-19T00:00:00Z
+FSFG,17,"First Savings Financial Group, Inc",False,2026-02-03T00:00:00Z
+OS,17,"OneStream, Inc. Class A Common Stock",False,2026-04-02T00:00:00Z
+OB,17,Outbrain Inc. Common Stock,False,2025-06-10T00:00:00Z
+CREV,16,Carbon Revolution Public Limited Ordinary Shares,False,2026-02-09T00:00:00Z
+EGIO,16,"Edgio, Inc. Common Stock",False,2024-09-18T04:00:00Z
+EKSO,16,"Ekso Bionics Holdings, Inc. Common Stock",False,2026-05-05T00:00:00Z
+RYZB,16,"RayzeBio, Inc. Common Stock",False,2024-02-27T05:00:00Z
+VERO,16,Venus Concept Inc. Common Stock,False,2026-02-09T00:00:00Z
+CSWI,16,"CSW Industrials, Inc",False,2025-06-09T00:00:00Z
+IMG,16,CIMG Inc. Common Stock,False,2026-03-06T00:00:00Z
+STBX,16,Starbox Group Holdings Ltd. Class A Ordinary Shares,False,2025-05-05T00:00:00Z
+AMAM,15,"Ambrx Biopharma, Inc. Common Stock",False,2024-03-08T05:00:00Z
+SWAV,15,"Shockwave Medical, Inc. Common Stock",False,2024-06-03T04:00:00Z
+AFMD,15,Affimed N.V.,False,2025-05-20T00:00:00Z
+VBTX,15,"Veritex Holdings, Inc.",False,2025-10-21T00:00:00Z
+CMAX,15,"CareMax, Inc. Class A Common Stock",False,2024-11-29T00:00:00Z
+LNW,15,"Light & Wonder, Inc. Common Stock",False,2025-11-13T00:00:00Z
+OPTN,15,"OptiNose, Inc. Common Stock",False,2025-05-22T00:00:00Z
+CHX,15,ChampionX Corporation,False,2025-07-17T00:00:00Z
+SKGR,15,SK Growth Opportunities Corporation Class A Common Stock,False,2025-04-11T00:00:00Z
+CCCS,15,CCC Intelligent Solutions Holdings Inc. Common Stock,False,2025-10-31T00:00:00Z
+BRKL,15,Brookline Bancorp Inc,False,2025-09-03T00:00:00Z
+DALN,15,DallasNews Corporation Series A Common Stock,False,2025-09-25T00:00:00Z
+VCIC,15,Vine Hill Capital Investment Corp. Class A Ordinary Shares,False,2026-04-01T00:00:00Z
+FMTO,15,Femto Technologies Inc. Common Stock,False,
+TTOO,14,"T2 Biosystems, Inc",False,2025-02-12T00:00:00Z
+BECN,14,"Beacon Roofing Supply, Inc.",False,2025-04-30T00:00:00Z
+LYT,14,Lytus Technologies Holdings PTV. Ltd. Common Shares,False,2025-03-31T00:00:00Z
+RMBL,14,"RumbleOn, Inc. Class B Common Stock",False,2025-08-13T00:00:00Z
+IPXX,14,Inflection Point Acquisition Corp. II Class A Ordinary Share,False,2025-03-14T00:00:00Z
+CLSD,14,"Clearside Biomedical, Inc. Common Stock",False,2025-12-01T00:00:00Z
+AY,14,Atlantica Sustainable Infrastructure plc Ordinary Shares,False,2024-12-13T00:00:00Z
+EVOK,14,"Evoke Pharma, Inc.",False,2025-12-18T00:00:00Z
+ZYXI,13,ZYNEX INC,False,2025-12-24T00:00:00Z
+PARAA,13,Paramount Global Class A Common Stock,False,2025-08-08T00:00:00Z
+TSVT,13,"2seventy bio, Inc. Common Stock",False,2025-05-14T00:00:00Z
+MHUA,13,"Meihua International Medical Technologies Co., Ltd. Ordinary Shares",False,2025-12-09T00:00:00Z
+WISA,13,"WiSA Technologies, Inc. Common Stock",False,
+SOND,13,Sonder Holdings Inc. Class A Common Stock,False,2025-11-24T00:00:00Z
+AILE,13,"iLearningEngines, Inc. Common Stock",False,2025-01-02T00:00:00Z
+SCWX,13,SecureWorks Corp  Class A Common Stock,False,2025-02-04T00:00:00Z
+PPBI,13,Pacific Premier Bancorp Inc,False,2025-09-03T00:00:00Z
+BLMZ,13,Harrison Global Holdings Inc. Ordinary Shares,False,2025-12-15T00:00:00Z
+GTHX,13,"G1 Therapeutics, Inc. Common Stock",False,2024-09-19T04:00:00Z
+CIGL,13,Concorde International Group Ltd Class A Ordinary Shares,False,2026-04-14T00:00:00Z
+CHAC,13,Crane Harbor Acquisition Corp. Class A Ordinary Shares,False,2026-03-27T00:00:00Z
+ALVR,12,"AlloVir, Inc. Common Stock",False,2025-03-19T00:00:00Z
+PTPI,12,"Petros Pharmaceuticals, Inc. Common Stock",False,2025-05-22T00:00:00Z
+ROVR,12,"Rover Group, Inc. Class A Common Stock",False,2024-02-28T05:00:00Z
+ATMV,12,AlphaVest Acquisition Corp Ordinary Shares,False,2025-12-10T00:00:00Z
+WISH,12,ContextLogic Inc. Class A Common Stock,False,2024-05-13T04:00:00Z
+BOWN,12,Bowen Acquisition Corp Ordinary Shares,False,2025-11-03T00:00:00Z
+ALCE,12,"Alternus Clean Energy, Inc. Class A Common Stock",False,2025-02-12T00:00:00Z
+CARA,12,"Cara Therapeutics, Inc.",False,2025-04-16T00:00:00Z
+STER,12,Sterling Check Corp. Common Stock,False,2024-11-01T04:00:00Z
+IROH,12,Iron Horse Acquisitions Corp. Common Stock,False,2025-10-01T00:00:00Z
+SGBX,12,Safe & Green Holdings Corp. Common Stock,False,2026-01-22T00:00:00Z
+OTRK,12,"Ontrak, Inc. Common Stock",False,2025-08-18T00:00:00Z
+ALIM,12,"Alimera Sciences, Inc.",False,2024-09-17T04:00:00Z
+PTIX,12,Performance Technologies Inc,False,2026-01-05T00:00:00Z
+SASR,12,Sandy Spring Bancorp Inc,False,
+MNTX,11,"Manitex International, Inc.",False,2025-01-03T00:00:00Z
+TAST,11,"Carrols Restaurant Group, Inc.",False,2024-05-17T04:00:00Z
+SGD,11,Safe and Green Development Corporation Common Stock,False,2025-12-19T00:00:00Z
+RCM,11,R1 RCM Inc. Common Stock,False,2024-11-20T05:00:00Z
+CSTR,11,"CapStar Financial Holdings, Inc",False,2024-04-02T04:00:00Z
+YTEN,11,"Yield10 Bioscience, Inc. Common Stock",False,2024-05-16T04:00:00Z
+HOLI,11,"Hollsys Automation Technologies INTERNATIONAL, LTD. COMMON (British Virgin Island)",False,2024-07-26T04:00:00Z
+RENE,11,Cartesian Growth Corporation II Class A Ordinary Shares,False,2025-05-13T00:00:00Z
+SVII,11,Spring Valley Acquisition Corp. II Class A Ordinary Shares,False,2025-10-21T00:00:00Z
+VCSA,11,"Vacasa, Inc. Class A Common Stock",False,2025-05-02T00:00:00Z
+YGMZ,11,MingZhu Logistics Holdings Limited Ordinary Shares,False,2025-12-12T00:00:00Z
+TCON,11,"TRACON Pharmaceuticals, Inc. Common Stock",False,2024-06-28T04:00:00Z
+BRY,11,Berry Corporation (bry) Common Stock,False,2025-12-19T00:00:00Z
+HLXB,11,Helix Acquisition Corp. II Class A Ordinary Shares,False,2025-08-12T00:00:00Z
+GORV,11,"Lazydays Holdings, Inc. Common Stock",False,2025-11-28T00:00:00Z
+SOVO,10,"Sovos Brands, Inc. Common Stock",False,2024-03-13T04:00:00Z
+ICCT,10,iCoreConnect Inc. Common stock,False,2025-05-22T00:00:00Z
+RTC,10,Baijiayun Group Ltd. Class A Ordinary Shares,False,2025-05-15T00:00:00Z
+XPDB,10,Power & Digital Infrastructure Acquisition II Corp. Class A Common Stock,False,2024-03-15T04:00:00Z
+HEAR,10,Turtle Beach Corporation Common Stock,False,
+FOSLL,10,"Fossil Group, Inc. 7% Senior Notes due 2026",False,2025-11-14T00:00:00Z
+PVBC,10,"Provident Bancorp, Inc. (MD) Common Stock",False,2025-11-17T00:00:00Z
+HTLF,10,"Heartland Financial USA, Inc.",False,2025-02-03T00:00:00Z
+GOGL,10,Golden Ocean Group Limited Common Stock,False,2025-08-21T00:00:00Z
+LANC,10,Lancaster Colony Corp,False,2025-07-01T00:00:00Z
+MRCC,10,Monroe Capital Corporation,False,2026-04-15T00:00:00Z
+LCW,9,Learn CW Investment Corporation Class A Ordinary Shares,False,2024-10-03T04:00:00Z
+SMFL,9,"Smart for Life, Inc. Common Stock",False,2024-09-19T04:00:00Z
+TBMC,9,Trailblazer Merger Corporation I Class A Common Stock,False,2026-03-30T00:00:00Z
+GHSI,9,"Guardion Health Sciences, Inc. Common Stock",False,2024-10-14T04:00:00Z
+CSLM,9,CSLM Acquisition Corp. Class A Ordinary Share,False,2025-01-22T00:00:00Z
+CVII,9,Churchill Capital Corp VII Class A Common Stock,False,2024-08-20T04:00:00Z
+IONM,9,Assure Holdings Corp. Common Stock,False,2024-07-24T04:00:00Z
+PTMN,9,Portman Ridge Finance Corporation Common Stock,False,2025-08-25T00:00:00Z
+CJET,9,"Chijet Motor Company, Inc. Ordinary Shares",False,2025-12-10T00:00:00Z
+RELI,9,"Reliance Global Group, Inc. Common Stock",False,2026-01-26T00:00:00Z
+JUNE,9,Junee Limited Ordinary Shares,False,
+OMIC,9,"Singular Genomics Systems, Inc. Common Stock",False,2025-02-24T00:00:00Z
+MCTR,9,CTRL Group Limited Ordinary Shares,False,2025-12-10T00:00:00Z
+KDLY,9,"Kindly MD, Inc. Common Stock",False,
+MEIP,9,"MEI Pharma, Inc.",False,2025-09-11T00:00:00Z
+BREA,9,Brera Holdings PLC Class B Ordinary Shares,False,2025-10-03T00:00:00Z
+ATHA,9,"Athira Pharma, Inc. Common Stock",False,2026-01-12T00:00:00Z
+BETS,8,Bit Brother Limited Class A Ordinary Shares,False,2024-03-07T05:00:00Z
+SEEL,8,"Seelos Therapeutics, Inc. Common Stock",False,2024-10-16T04:00:00Z
+MMAT,8,Meta Materials Inc. Common Stock,False,2024-08-21T04:00:00Z
+GODN,8,Golden Star Acquisition Corporation Ordinary Shares,False,2025-01-27T00:00:00Z
+SPLK,8,Splunk Inc,False,2024-03-19T04:00:00Z
+MINM,8,"Minim, Inc. Common Stock",False,2025-07-10T00:00:00Z
+ONVO,8,Organovo Holdings Inc.,False,
+SLAM,8,Slam Corp. Class A Ordinary Share,False,2024-08-27T04:00:00Z
+ADN,8,"Advent Technologies Holdings, Inc. Class A Common Stock",False,2025-10-30T00:00:00Z
+ISRL,8,Israel Acquisitions Corp Class A Ordinary Shares,False,2025-12-04T00:00:00Z
+PWFL,8,"PowerFleet, Inc. Common Stock",False,
+NYMT,8,"New York Mortgage Trust, Inc.",False,2025-09-03T00:00:00Z
+APTO,8,"Aptose Biosciences, Inc.",False,2025-04-02T00:00:00Z
+PSTX,8,"Poseida Therapeutics, Inc. Common Stock",False,2025-01-10T00:00:00Z
+MSPR,8,"MSP Recovery, Inc. Class A Common Stock",False,2025-12-22T00:00:00Z
+MBCN,8,Middlefield Banc Corp.,False,2026-03-03T00:00:00Z
+SBLX,8,"StableX Technologies, Inc. Common Stock",False,2026-04-29T00:00:00Z
+FWBI,7,"First Wave BioPharma, Inc. Common Stock",False,
+HCVI,7,Hennessy Capital Investment Corp. VI Class A Common Stock,False,2025-04-04T00:00:00Z
+GAQ,7,Generation Asia I Acquisition Limited Class A Ordinary Shares,False,2024-11-06T05:00:00Z
+GRPH,7,"Graphite Bio, Inc. Common Stock",False,2024-03-22T04:00:00Z
+TMTC,7,TMT Acquisition Corp Ordinary Shares,False,2024-11-22T05:00:00Z
+CGBDL,7,"Carlyle Secured Lending, Inc. 8.20% Notes due 2028",False,2025-12-01T00:00:00Z
+MCAA,7,Mountain & Co. I Acquisition Corp. Class A Ordinary Shares,False,2024-11-07T05:00:00Z
+ESHA,7,ESH Acquisition Corp. Class A Common Stock,False,2026-05-01T00:00:00Z
+BCLI,7,Brainstorm Cell Therapeutics Inc.,False,2025-07-18T00:00:00Z
+HYZN,7,Hyzon Motors Inc. Class A Common Stock,False,2025-01-31T00:00:00Z
+LFLY,7,"Leafly Holdings, Inc. Common Stock",False,2025-01-21T00:00:00Z
+IVCB,7,Investcorp Europe Acquisition Corp I Class A Ordinary Shares,False,2024-12-24T00:00:00Z
+SNPO,7,Snap One Holdings Corp. Common Stock,False,2024-06-17T04:00:00Z
+AWIN,7,AERWINS Technologies Inc. Common Stock,False,2024-06-20T04:00:00Z
+VCNX,7,"Vaccinex, Inc. Common Stock",False,2024-12-18T00:00:00Z
+FLIC,7,First of Long Island Corp/The,False,2025-06-02T00:00:00Z
+BSII,7,Black Spade Acquisition II Co Class A Ordinary Share,False,
+EGRX,6,"Eagle Pharmaceuticals, Inc.",False,2024-10-03T04:00:00Z
+HIBB,6,"Hibbett, Inc. Common Stock",False,2024-07-26T04:00:00Z
+SYRS,6,"Syros Pharmaceuticals, Inc. Common Stock",False,2025-03-20T00:00:00Z
+MCAF,6,Mountain Crest Acquisition Corp. IV Common Stock,False,2024-04-02T04:00:00Z
+CASI,6,"CASI Pharmaceuticals, Inc. Ordinary Shares",False,2026-02-26T00:00:00Z
+THAR,6,"Tharimmune, Inc. Common Stock",False,2026-02-18T00:00:00Z
+CAPT,6,Captivision Inc. Ordinary Shares,False,2026-04-09T00:00:00Z
+CHEA,6,Chenghe Acquisition Co. Class A Ordinary Share,False,2024-02-16T05:00:00Z
+PLAO,6,Patria Latin American Opportunity Acquisition Corp. Class A Ordinary Shares,False,2025-03-19T00:00:00Z
+GLST,6,"Global Star Acquisition, Inc. Class A Common Stock",False,2025-03-14T00:00:00Z
+HUGE,6,FSD Pharma Inc. Class B Subordinate Voting Shares,False,2024-08-15T04:00:00Z
+ABIO,6,"ARCA biopharma, Inc.",False,2024-09-03T04:00:00Z
+WIRE,6,Encore Wire Corp,False,2024-07-03T04:00:00Z
+ATNF,6,180 Life Sciences Corp. Common Stock,False,2025-08-18T00:00:00Z
+IZTC,6,Invizyne Technologies Inc. Common Stock,False,
+ESSA,6,"ESSA Bancorp, Inc.",False,2025-07-25T00:00:00Z
+CCIR,6,Cohen Circle Acquisition Corp. I Class A Ordinary Shares,False,2025-08-15T00:00:00Z
+MGRM,6,Monogram Technologies Inc. Common Stock,False,2025-10-08T00:00:00Z
+VAPE,6,CEA Industries Inc. Common Stock,False,2025-08-06T00:00:00Z
+ATON,6,AlphaTON Capital Corp. Common Stock,False,2026-04-21T00:00:00Z
+LCAA,5,L Catterton Asia Acquisition Corp Class A Ordinary Shares,False,2024-02-23T05:00:00Z
+RPTX,5,Repare Therapeutics Inc. Common Shares,False,2026-01-29T00:00:00Z
+PTWO,5,"Pono Capital Two, Inc. Class A Common Stock",False,
+CHK,5,Chesapeake Energy Corporation Common Stock,False,
+VIRI,5,"Virios Therapeutics, Inc. Common Stock",False,2024-10-09T04:00:00Z
+TENK,5,TenX Keane Acquisition Ordinary Share,False,2024-08-13T04:00:00Z
+ENCP,5,Energem Corp Class A Ordinary Shares,False,
+PCH,5,PotlatchDeltic Corporation Common Stock,False,2026-02-03T00:00:00Z
+PFC,5,Premier Financial Corp. Common Stock,False,2025-03-04T00:00:00Z
+RGF,5,"The Real Good Food Company, Inc. Class A Common Stock",False,2025-01-07T00:00:00Z
+GIFI,5,Gulf Island Fabrication Inc,False,2026-01-20T00:00:00Z
+NGMS,5,NeoGames S.A. Ordinary Shares,False,2024-04-26T04:00:00Z
+EVGR,5,Evergreen Corporation Class A Ordinary Share,False,2025-02-13T00:00:00Z
+HOOK,5,HOOKIPA Pharma Inc. Common Stock,False,2025-08-08T00:00:00Z
+GMGI,5,"Golden Matrix Group, Inc. Common Stock",False,2026-03-03T00:00:00Z
+DHAC,5,Digital Health Acquisition Corp. Common Stock,False,2024-06-26T04:00:00Z
+PWOD,5,Penns Woods Bancorp Inc,False,2025-07-29T00:00:00Z
+TWNP,5,Twin Hospitality Group Inc. Class A Common Stock,False,2026-02-04T00:00:00Z
+PRPH,5,"ProPhase Labs, Inc. Common Stock (DE)",False,2026-01-05T00:00:00Z
+XAGE,5,"Longevity Health Holdings, Inc. Common Stock",False,2025-09-12T00:00:00Z
+AUGX,4,"Augmedix, Inc. Common Stock",False,2024-10-03T04:00:00Z
+ATXI,4,"Avenue Therapeutics, Inc. Common Stock",False,2025-03-19T00:00:00Z
+OPINL,4,Office Properties Income Trust 6.375% Senior Notes due 2050,False,2025-10-07T00:00:00Z
+MRNS,4,"Marinus Pharmaceuticals, Inc",False,2025-02-12T00:00:00Z
+HTBI,4,"HomeTrust Bancshares, Inc. Common Stock",False,
+NRBO,4,"NeuroBo Pharmaceuticals, Inc. Common Stock",False,
+LBAI,4,Lakeland Bancorp Inc,False,2024-05-16T04:00:00Z
+NCNC,4,noco-noco Inc. Ordinary Share,False,2024-11-25T05:00:00Z
+PLTN,4,Plutonian Acquisition Corp. Common Stock,False,2024-06-07T04:00:00Z
+TBIO,4,"Telesis Bio, Inc. Common Stock",False,2024-09-30T04:00:00Z
+HUDA,4,Hudson Acquisition I Corp. Common Stock,False,2025-01-24T00:00:00Z
+NMHI,4,Natures Miracle Holding Inc. Common Stock,False,2025-01-15T00:00:00Z
+LABP,4,"Landos Biopharma, Inc. Common Stock",False,2024-05-24T04:00:00Z
+ORGS,4,Orgenesis Inc. Common Stock,False,2024-10-21T04:00:00Z
+MCBC,4,Macatawa Bank Corp,False,2024-08-02T04:00:00Z
+BWAQ,4,Blue World Acquisition Corporation Class A Ordinary Shares,False,2024-07-02T04:00:00Z
+GLAC,4,Global Lights Acquisition Corp Ordinary Shares,False,2025-04-07T00:00:00Z
+BRP,4,"The Baldwin Insurance Group, Inc. Class A Common Stock",False,
+HMNF,4,HMN Financial Inc,False,2024-10-10T04:00:00Z
+SSBK,4,"Southern States Bancshares, Inc. Common",False,2025-07-02T00:00:00Z
+TPIC,4,"TPI Composites, Inc. Common Stock",False,2025-08-19T00:00:00Z
+SWKH,4,SWK Holdings Corporation,False,2026-04-07T00:00:00Z
+ISPO,4,Inspirato Incorporated Class A Common Stock,False,2026-02-04T00:00:00Z
+SAG,4,SAG Holdings Limited Ordinary Shares,False,
+IBTX,4,"Independent Bank Group, Inc.",False,2025-01-02T00:00:00Z
+DATS,4,"DatChat, Inc. Common Stock",False,2025-08-11T00:00:00Z
+DYNX,4,Dynamix Corporation Class A Ordinary Shares,False,2025-08-27T00:00:00Z
+QVCGB,4,"QVC Group, Inc. Series B Common Stock",False,2025-05-28T00:00:00Z
+GAINN,4,Gladstone Investment Corporation 5.00% Notes Due 2026,False,2026-05-05T00:00:00Z
+CCCM,4,Columbus Circle Capital Corp I Class A Ordinary Shares,False,2025-07-31T00:00:00Z
+AYRO,4,"AYRO, Inc. Common Stock",False,2025-08-25T00:00:00Z
+IROQ,4,"IF Bancorp, Inc.",False,2026-03-16T00:00:00Z
+DECA,3,Denali Capital Acquisition Corp. Class A Ordinary Shares,False,2025-04-16T00:00:00Z
+BIOR,3,"Biora Therapeutics, Inc. Common Stock",False,2024-12-11T00:00:00Z
+INPX,3,Inpixon Common Stock,False,2024-03-13T04:00:00Z
+ESGRP,3,Enstar Group Limited Depositary Shares Each Representing 1/1000th of an interest in Preference Shares,False,2025-07-14T00:00:00Z
+IGTA,3,Inception Growth Acquisition Limited Common Stock,False,2024-12-17T00:00:00Z
+ACAC,3,Acri Capital Acquisition Corporation Class A Common Stock,False,2024-09-27T04:00:00Z
+AKYA,3,"Akoya BioSciences, Inc. Common Stock",False,2025-07-09T00:00:00Z
+AVRO,3,"AVROBIO, Inc. Common Stock",False,2024-06-21T04:00:00Z
+IMGN,3,Immunogen Inc,False,2024-02-13T05:00:00Z
+OAKU,3,Oak Woods Acquisition Corporation Class A Ordinary Shares,False,2026-03-25T00:00:00Z
+AFAR,3,Aura FAT Projects Acquisition Corp Class A Ordinary Shares,False,2024-09-09T04:00:00Z
+AQU,3,Aquaron Acquisition Corp. Common Stock,False,2025-03-07T00:00:00Z
+PLMI,3,Plum Acquisition Corp. I Class A Ordinary Share,False,2024-09-17T04:00:00Z
+MARX,3,Mars Acquisition Corp. Ordinary Shares,False,2025-01-03T00:00:00Z
+PWUP,3,PowerUp Acquisition Corp. Class A Ordinary Shares,False,2025-02-20T00:00:00Z
+TETE,3,Technology & Telecommunication Acquisition Corporation Class A Ordinary Shares,False,2025-01-23T00:00:00Z
+ARYD,3,ARYA Sciences Acquisition Corp IV Class A Odinary Shares,False,2024-08-01T04:00:00Z
+BHAC,3,Focus Impact BH3 Acquisition Company Class A Common Stock,False,2024-10-16T04:00:00Z
+NEWTZ,3,"NewtekOne, Inc. 5.50% Notes Due 2026",False,2026-01-30T00:00:00Z
+OCEA,3,"Ocean Biomedical, Inc. Common Stock",False,2025-04-24T00:00:00Z
+PIRS,3,PIERIS PHARMACEUTICALS INC,False,2024-12-16T00:00:00Z
+WAVD,3,"WaveDancer, Inc. Common Stock",False,2024-08-13T04:00:00Z
+KYCH,3,Keyarch Acquisition Corporation Ordinary Shares,False,2024-04-05T04:00:00Z
+VSTE,3,Vast Renewables Limited Ordinary Shares,False,2025-05-27T00:00:00Z
+DIST,3,Distoken Acquisition Corporation Ordinary Shares,False,2025-07-10T00:00:00Z
+EMCG,3,Embrace Change Acquisition Corp Ordinary Shares,False,2025-08-21T00:00:00Z
+GLADZ,3,Gladstone Capital Corporation 7.75% Notes due 2028,False,2025-10-15T00:00:00Z
+PLMJ,3,Plum Acquisition Corp. III Class A Ordinary Shares,False,2025-01-28T00:00:00Z
+ICCH,3,"ICC Holdings, Inc.",False,2025-03-14T00:00:00Z
+GRALV,3,"GRAIL, Inc. Common Stock When Issued",False,
+PFTA,3,Perception Capital Corp. III Class A Ordinary Share,False,2024-12-09T00:00:00Z
+TBLT,3,"ToughBuilt Industries, Inc. Common Stock",False,2024-08-09T04:00:00Z
+CETU,3,Cetus Capital Acquisition Corp. Class A Common Stock,False,2024-08-01T04:00:00Z
+TTNP,3,TITAN PHARMACEUTICAL INC,False,2025-10-02T00:00:00Z
+BYU,3,"BAIYU Holdings, Inc. Common Stock",False,2024-11-21T05:00:00Z
+BUJA,3,Bukit Jalil Global Acquisition 1 Ltd. Ordinary Shares,False,2025-05-09T00:00:00Z
+HSPO,3,Horizon Space Acquisition I Corp. Ordinary Shares,False,2025-12-12T00:00:00Z
+NEHC,3,New Era Helium Inc Common Stock,False,2025-08-13T00:00:00Z
+JVSA,3,JV SPAC Acquisition Corp. Class A Ordinary Share,False,2025-07-01T00:00:00Z
+ABLLL,3,"Abacus Global Management, Inc. 9.875% Fixed Rate Senior Notes due 2028",False,2025-12-30T00:00:00Z
+CSWCZ,3,Capital Southwest Corporation 7.75% Notes due 2028,False,2025-10-13T00:00:00Z
+NYMTI,3,"New York Mortgage Trust, Inc. 9.125% Senior Notes Due 2029",False,2025-09-03T00:00:00Z
+NYMTG,3,"New York Mortgage Trust, Inc. 9.125% Senior Notes Due 2030",False,2025-09-03T00:00:00Z
+OPOF,3,Old Point Financial Corp,False,2025-09-03T00:00:00Z
+OCTO,3,Eightco Holdings Inc. Common Stock,False,2025-09-11T00:00:00Z
+ENTO,3,"Entero Therapeutics, Inc. Common Stock",False,2025-12-01T00:00:00Z
+MCAC,2,Monterey Capital Acquisition Corporation Class A Common Stock,False,2024-07-15T04:00:00Z
+LIBY,2,Liberty Resources Acquisition Corp. Class A Common Stock,False,2024-03-27T04:00:00Z
+NUBI,2,Nubia Brand International Corp. Class A Common Stock,False,2024-02-05T05:00:00Z
+GHIX,2,"Gores Holdings IX, Inc. Class A Common Stock",False,2024-12-06T00:00:00Z
+BNIX,2,Bannix Acquisition Corp. Common Stock,False,2025-03-17T00:00:00Z
+RPHM,2,"Reneo Pharmaceuticals, Inc. Common Stock",False,2024-10-07T04:00:00Z
+CLRC,2,ClimateRock Class A Ordinary Shares,False,2025-04-10T00:00:00Z
+DCFC,2,Tritium DCFC Limited Ordinary Shares,False,2024-04-22T04:00:00Z
+APXI,2,APx Acquisition Corp. I Class A Ordinary Share,False,2024-12-17T00:00:00Z
+OCAX,2,OCA Acquisition Corp. Class A Common Stock,False,2024-07-23T04:00:00Z
+ADOC,2,Edoc Acquisition Corp. Class A Ordinary Share,False,2024-03-22T04:00:00Z
+BOCN,2,Blue Ocean Acquisition Corp Class A Ordinary Shares,False,2024-12-06T00:00:00Z
+AOGO,2,Arogo Capital Acquisition Corp. Class A Common Stock,False,2024-09-17T04:00:00Z
+CALB,2,California BanCorp Common Stock,False,2024-08-01T04:00:00Z
+LDWY,2,"Lendway, Inc. Common Stock (DE)",False,2026-02-02T00:00:00Z
+MSSA,2,Metal Sky Star Acquisition Corporation Ordinary shares,False,2025-04-09T00:00:00Z
+ELEV,2,"Elevation Oncology, Inc. Common stock",False,2025-07-24T00:00:00Z
+BSFC,2,Blue Star Foods Corp. Common Stock,False,2024-12-20T00:00:00Z
+DHCA,2,DHC Acquisition Corp. Class A ordinary share,False,2024-03-15T04:00:00Z
+VINO,2,"Gaucho Group Holdings, Inc. Common Stock",False,2024-11-22T05:00:00Z
+IVCP,2,Swiftmerge Acquisition Corp. Class A Ordinary Share,False,2024-12-16T00:00:00Z
+XFIN,2,ExcelFin Acquisition Corp Class A Common Stock,False,2024-10-02T04:00:00Z
+ETAO,2,"Etao International Co., Ltd. Ordinary Shares",False,2024-05-09T04:00:00Z
+OPGN,2,"OpGen, Inc",False,2024-08-20T04:00:00Z
+ALRN,2,"Aileron Therapeutics, Inc. Common Stock",False,
+FAAS,2,DigiAsia Corp. Ordinary Shares,False,2025-09-19T00:00:00Z
+KAVL,2,"Kaival Brands Innovations Group, Inc",False,2025-12-23T00:00:00Z
+ROCL,2,Roth CH Acquisition V Co. Common Stock,False,2024-12-09T00:00:00Z
+IVCA,2,Investcorp AI Acquisition Corp. Class A Ordinary Share,False,2025-05-08T00:00:00Z
+BCSA,2,Blockchain Coinvestors Acquisition Corp. I Class A Ordinary Shares,False,2024-11-13T05:00:00Z
+THCP,2,"Thunder Bridge Capital Partners IV, Inc. Class A Common Stock",False,2024-12-11T00:00:00Z
+NNAG,2,99 Acquisition Group Inc. Class A Common Stock,False,2024-09-13T04:00:00Z
+LSXMK,2,Liberty Media Corporation Series C Liberty SiriusXM Common Stock,False,2024-09-10T04:00:00Z
+VMCA,2,Valuence Merger Corp. I Class A Ordinary Shares,False,2025-03-11T00:00:00Z
+IKNA,2,"Ikena Oncology, Inc. Common Stock",False,2025-07-28T00:00:00Z
+TGAA,2,Target Global Acquisition I Corp. Class A Ordinary Share,False,2024-12-17T00:00:00Z
+TRVN,2,"Trevena, Inc.",False,2024-10-08T04:00:00Z
+DYCQ,2,DT Cloud Acquisition Corporation Ordinary Shares,False,2025-11-21T00:00:00Z
+LIPO,2,Lipella Pharmaceuticals Inc. Common Stock,False,
+NUZE,2,"NuZee, Inc. Common Stock",False,
+LATG,2,Chenghe Acquisition I Co. Class A Ordinary Shares,False,2025-01-16T00:00:00Z
+TRINL,2,Trinity Capital Inc. 7.00% Notes Due 2025,False,2025-01-21T00:00:00Z
+SANW,2,S&W Seed Company,False,2025-08-04T00:00:00Z
+CEAD,2,CEA Industries Inc. Common Stock,False,2025-06-13T00:00:00Z
+BCOW,2,"1895 Bancorp of Wisconsin, Inc. Common Stock",False,2025-03-10T00:00:00Z
+RHLDV,2,Resolute Holdings Management Common Stock Ex-distribution When-Issued,False,
+MAYA,2,Maywood Acquisition Corp. Class A Ordinary Shares,False,2025-11-25T00:00:00Z
+MGIC,2,Magic Software Enterprises Ltd,False,2026-02-25T00:00:00Z
+GATE,2,Marblegate Acquisition Corp. Class A Common Stock,False,2025-04-04T00:00:00Z
+CFSB,2,"CFSB Bancorp, Inc. Common Stock",False,2025-11-04T00:00:00Z
+STRM,2,"Streamline Health Solutions, Inc.",False,2025-08-13T00:00:00Z
+VBIX,2,Viewbix Inc. Common Stock,False,2026-04-30T00:00:00Z
+LRFC,2,Logan Ridge Finance Corporation Common Stock,False,2025-07-16T00:00:00Z
+GECCZ,2,Great Elm Capital Corp. 8.75% Notes due 2028,False,2025-09-30T00:00:00Z
+RWAYZ,2,Runway Growth Finance Corp. 8.00% Notes due 2027,False,2026-03-05T00:00:00Z
+VTRU,1,Vitru Limited Common Shares,False,2024-06-10T04:00:00Z
+OMGA,1,"Omega Therapeutics, Inc. Common Stock",False,2025-02-25T00:00:00Z
+MURA,1,Mural Oncology plc Ordinary Shares,False,2025-12-08T00:00:00Z
+RCAC,1,Revelstone Capital Acquisition Corp. Class A Common Stock,False,2024-03-04T05:00:00Z
+EMLD,1,FTAC Emerald Acquisition Corp. Class A Common Stock,False,
+GLLI,1,Globalink Investment Inc. Common Stock,False,2024-12-17T00:00:00Z
+ARIZ,1,Arisz Acquisition Corp. Common Stock,False,2024-03-01T05:00:00Z
+MYMD,1,"MyMD Pharmaceuticals, Inc. Common Stock (DE)",False,
+ATAK,1,Aurora Technology Acquisition Corp. Class A Ordinary Shares,False,2024-01-19T05:00:00Z
+GRDI,1,GRIID Infrastructure Inc. Common Stock,False,2024-11-01T04:00:00Z
+SNCE,1,"Science 37 Holdings, Inc. Common Stock",False,2024-03-13T04:00:00Z
+FTII,1,FutureTech II Acquisition Corp. Class A Common Stock,False,2025-02-26T00:00:00Z
+QDRO,1,Quadro Acquisition One Corp. Class A Ordinary Shares,False,2024-05-29T04:00:00Z
+GBBK,1,Global Blockchain Acquisition Corp. Common Stock,False,2025-04-15T00:00:00Z
+LKCO,1,Luokung Technology Corp Ordinary Shares,False,2025-03-31T00:00:00Z
+FIXX,1,"Homology Medicines, Inc. Common Stock",False,2024-03-26T04:00:00Z
+AVGR,1,"Avinger, Inc. Common Stock",False,2025-02-18T00:00:00Z
+CDAQ,1,Compass Digital Acquisition Corp. Class A Ordinary Shares,False,2024-10-22T04:00:00Z
+LBBB,1,Lakeshore Acquisition II Corp. Ordinary Shares,False,2024-03-12T04:00:00Z
+CMCA,1,Capitalworks Emerging Markets Acquisition Corp Class A Ordinary Shares,False,2024-06-12T04:00:00Z
+FEXD,1,Fintech Ecosystem Development Corp. Class A Common Stock,False,2024-08-20T04:00:00Z
+MDRX,1,Veradigm Inc. Common Stock,False,2024-02-29T05:00:00Z
+GIA,1,"GigCapital 5, Inc. Common Stock",False,2024-03-05T05:00:00Z
+IXAQ,1,IX Acquisition Corp. Class A Ordinary Share,False,2024-10-16T04:00:00Z
+KACL,1,Kairous Acquisition Corp. Limited Ordinary Shares,False,2024-12-23T00:00:00Z
+ACBA,1,Ace Global Business Acquisition Limited Ordinary Shares,False,2024-05-24T04:00:00Z
+SSIC,1,Silver Spike Investment Corp. Common Stock,False,
+ZPTA,1,Zapata Computing Holdings Inc. Common Stock,False,2024-10-28T04:00:00Z
+LGVC,1,LAMF Global Ventures Corp. I Class A Ordinary Shares,False,2024-05-02T04:00:00Z
+LVRO,1,Lavoro Limited Class A Ordinary Shares,False,2026-02-24T00:00:00Z
+RWOD,1,Redwoods Acquisition Corp. Common Stock,False,2024-06-24T04:00:00Z
+BACK,1,"IMAC Holdings, Inc. Common Stock",False,2025-03-26T00:00:00Z
+ASCB,1,A SPAC II Acquisition Corp. Ordinary Shares,False,2024-09-24T04:00:00Z
+BLAC,1,Bellevue Life Sciences Acquisition Corp. Common Stock,False,2025-02-18T00:00:00Z
+FAT,1,FAT Brands Inc. Class A Common Stock,False,2026-02-04T00:00:00Z
+TSRI,1,TSR Inc. New,False,2024-07-01T04:00:00Z
+GDST,1,Goldenstone Acquisition Limited Common Stock,False,2025-03-26T00:00:00Z
+AEZS,1,"Aeterna Zentaris, Inc.",False,2024-08-09T04:00:00Z
+INXBV,1,"Inhibrx Biosciences, Inc. Common Stock When Issued",False,
+INXB,1,"Inhibrx Biosciences, Inc. Common Stock",False,
+WAVS,1,Western Acquisition Ventures Corp. Common Stock,False,
+PTSI,1,PAM Transportation Services,False,
+LSXMA,1,Liberty Media Corporation Series A Liberty SiriusXM Common Stock,False,2024-09-10T04:00:00Z
+PEGR,1,Project Energy Reimagined Acquisition Corp. Class A Ordinary Share,False,2024-07-30T04:00:00Z
+ZLS,1,Zalatoris II Acquisition Corp Class A Ordinary Shares,False,2024-08-07T04:00:00Z
+KRNL,1,"Kernel Group Holdings, Inc. Class A Ordinary Shares",False,2024-08-06T04:00:00Z
+FORL,1,Four Leaf Acquisition Corporation Class A Common Stock,False,2025-10-17T00:00:00Z
+BYNO,1,byNordic Acquisition Corporation Class A Common Stock,False,2025-02-18T00:00:00Z
+PRLH,1,Pearl Holdings Acquisition Corp Class A Ordinary Shares,False,2024-12-23T00:00:00Z
+PALT,1,"Paltalk, Inc. Common Stock",False,
+NOVV,1,Nova Vision Acquisition Corp. Ordinary share,False,2024-11-20T05:00:00Z
+BRKH,1,BurTech Acquisition Corp. Class A Common Stock,False,2024-12-18T00:00:00Z
+TBNK,1,Territorial Bancorp Inc.,False,2025-04-03T00:00:00Z
+CITE,1,Cartica Acquisition Corp Class A Ordinary Shares,False,2025-01-13T00:00:00Z
+WHLM,1,"Wilhelmina International, Inc",False,2024-12-30T00:00:00Z
+ZIONL,1,"Zions Bancorporation, N.A. 6.95% Fixed-to-Floating Rate Subordinated Notes due September 15, 2028",False,2024-12-17T00:00:00Z
+MBINO,1,Merchants Bancorp Depositary Shares Each Representing a 1/40th Interest in a Share of Series B Fixed-to-Floating Rate,False,2025-01-03T00:00:00Z
+STCN,1,"Steel Connect, Inc. Common Stock",False,2025-01-03T00:00:00Z
+NAYA,1,"NAYA Biosciences, Inc. Common Stock",False,
+RFAC,1,RF Acquisition Corp. Class A Common Stock,False,2025-02-14T00:00:00Z
+MTTR,1,"Matterport, Inc. Class A Common Stock",False,2025-03-03T00:00:00Z
+SNDKV,1,Sandisk Corporation Common Stock When-Issued,False,
+NYMTL,1,"New York Mortgage Trust, Inc. 6.875% Series F Fixed-to-Floating Rate Cumulative Redeemable Preferred Stock, $0.01 par value per share",False,2025-09-03T00:00:00Z
+EHLDV,1,Euroholdings Ltd. Common Stock When Issued,False,
+YOSH,1,Yoshiharu Global Co. Class A Common Stock,False,2025-09-03T00:00:00Z
+SJW,1,SJW Group Common Stock,False,
+DCOMG,1,"Dime Community Bancshares, Inc. 9.000% Fixed-to-Floating Rate Subordinated Notes due 2034",False,2026-04-07T00:00:00Z
+PBBK,1,"PB Bankshares, Inc. Common Stock",False,2026-01-06T00:00:00Z
+HROWL,1,"Harrow, Inc. 8.625% Senior Notes due 2026",False,2025-10-13T00:00:00Z
+TNFA,1,"TNF Pharmaceuticals, Inc. Common Stock",False,2025-09-25T00:00:00Z
+POAI,1,Predictive Oncology Inc. Common Stock,False,2025-12-12T00:00:00Z
+UBFO,1,United Security Bancshares,False,2026-04-02T00:00:00Z
+GAINL,1,Gladstone Investment Corporation 8.00% Notes due 2028,False,2025-12-16T00:00:00Z
+ARBKL,1,Argo Blockchain plc 8.75% Senior Notes due 2026,False,2025-12-15T00:00:00Z
+ETHM,1,Dynamix Corporation Class A Ordinary Shares,False,2026-05-01T00:00:00Z

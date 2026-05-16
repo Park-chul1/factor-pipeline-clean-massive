@@ -11,18 +11,22 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
+
+
+RESIDUAL_HEATMAP_COLORS = ("#2166ac", "#fff176", "#b2182b")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Plot squared residual diagnostics from saved factor pipeline outputs"
+        description="Plot residual diagnostics from saved factor pipeline outputs"
     )
     parser.add_argument("--input-dir", required=True, help="Directory containing factor pipeline outputs")
     parser.add_argument(
         "--clip-percentile",
         type=float,
         default=99.5,
-        help="Percentile used as the heatmap colorbar vmax",
+        help="Percentile used as the symmetric heatmap colorbar limit",
     )
     parser.add_argument(
         "--sort-tickers-by",
@@ -170,6 +174,10 @@ def compute_residuals(X: np.ndarray, r: np.ndarray, factor_returns: np.ndarray) 
     return r_hat, residual, sq_err
 
 
+def _signed_sqrt_abs_residual(residual: np.ndarray) -> np.ndarray:
+    return np.sign(residual) * np.sqrt(np.abs(residual))
+
+
 def _finite_percentile(values: np.ndarray, percentile: float) -> float | None:
     finite_values = values[np.isfinite(values)]
     if finite_values.size == 0:
@@ -270,21 +278,26 @@ def plot_heatmap(
     ticker_coverage: np.ndarray | None = None,
     figsize: tuple[float, float] = (16.0, 8.0),
     bad_color: str = "lightgray",
-    title: str = "Squared Residual Heatmap",
+    title: str = "Signed Sqrt-Abs Residual Heatmap",
 ) -> np.ndarray:
     if ticker_coverage is None:
         ticker_coverage = compute_ticker_coverage(residual)
     ticker_order = _ticker_order(sq_err, residual, sort_tickers_by, ticker_coverage)
 
     sorted_sq_err = sq_err[:, ticker_order]
+    sorted_signed_residual = _signed_sqrt_abs_residual(residual[:, ticker_order])
     sorted_tickers = [tickers[i] for i in ticker_order]
-    heatmap_data = np.ma.masked_invalid(sorted_sq_err.T)
-    vmax = _finite_percentile(sorted_sq_err, clip_percentile)
-    if vmax is not None and vmax <= 0:
-        vmax = None
+    heatmap_data = np.ma.masked_invalid(sorted_signed_residual.T)
+    limit = _finite_percentile(np.abs(sorted_signed_residual), clip_percentile)
+    if limit is None or limit <= 0:
+        limit = 1.0
 
-    cmap = plt.get_cmap("viridis").copy()
+    cmap = LinearSegmentedColormap.from_list(
+        "residual_blue_yellow_red",
+        RESIDUAL_HEATMAP_COLORS,
+    ).copy()
     cmap.set_bad(bad_color)
+    norm = TwoSlopeNorm(vmin=-limit, vcenter=0.0, vmax=limit)
 
     fig, ax = plt.subplots(figsize=figsize)
     im = ax.imshow(
@@ -292,8 +305,7 @@ def plot_heatmap(
         aspect="auto",
         origin="lower",
         interpolation="nearest",
-        vmin=0,
-        vmax=vmax,
+        norm=norm,
         cmap=cmap,
     )
     ax.set_title(title)
@@ -308,11 +320,12 @@ def plot_heatmap(
     ax.set_yticklabels([sorted_tickers[i] for i in y_positions])
 
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label("squared residual")
+    cbar.set_label("signed sqrt(abs residual)")
     ax.text(
         0.0,
         -0.16,
-        "All heatmap rows are retained; only axis labels are subsampled.",
+        "Blue = negative residual, yellow = near zero, red = positive residual. "
+        "All rows are retained; only axis labels are subsampled.",
         transform=ax.transAxes,
         ha="left",
         va="top",
@@ -674,7 +687,7 @@ def main() -> None:
             ticker_coverage=ticker_coverage[coverage_mask],
             figsize=tuple(args.figsize),
             bad_color=args.bad_color,
-            title=f"Squared Residual Heatmap, Coverage >= {args.coverage_threshold:g}",
+            title=f"Signed Sqrt-Abs Residual Heatmap, Coverage >= {args.coverage_threshold:g}",
         )
         plot_heatmap(
             sq_err=sq_err[:, coverage_mask],
@@ -687,7 +700,7 @@ def main() -> None:
             ticker_coverage=ticker_coverage[coverage_mask],
             figsize=tuple(args.figsize),
             bad_color=args.bad_color,
-            title=f"Squared Residual Heatmap, Coverage Filtered, p{args.extreme_clip_percentile:g} Clip",
+            title=f"Signed Sqrt-Abs Residual Heatmap, Coverage Filtered, p{args.extreme_clip_percentile:g} Clip",
         )
     save_top_events(
         dates=dates,

@@ -36,7 +36,10 @@ class DailyBacktestConfig:
     input_dir: Path = Path("data/processed_clean")
     out_dir: Path = Path("data/close_to_next_open_backtest")
     daily_bars_path: Path | None = None
+    execution_bars_path: Path | None = None
     reports_dir: Path = Path("reports/daily")
+    start_date: str | None = None
+    end_date: str | None = None
     rebalance_frequency: str = "daily"
     holding_period_days: int = 1
     long_quantile: float = 0.9
@@ -44,13 +47,25 @@ class DailyBacktestConfig:
     max_positions_long: int | None = None
     max_positions_short: int | None = None
     gross_exposure: float = 2.0
+    max_net_exposure: float = 0.10
     max_position_weight: float = 0.05
     min_alpha_threshold: float = 0.0
+    min_price: float = 0.0
     min_dollar_volume: float = 0.0
     turnover_cap: float | None = None
+    turnover_penalty_bps: float = 0.0
     transaction_cost_bps: float = 1.0
     slippage_bps: float = 2.0
     min_net_alpha_after_cost_bps: float = 5.0
+    volatility_target_annual: float | None = None
+    volatility_lookback_days: int = 20
+    max_leverage_multiplier: float = 1.0
+    var_confidence: float = 0.95
+    var_lookback_days: int = 60
+    max_daily_var: float | None = None
+    max_drawdown_limit: float | None = None
+    drawdown_control_start: float = 0.06
+    min_risk_scale: float = 0.25
     execution_price_mode: str = "open"
     allow_short: bool = True
     forecast_method: str = "ewma"
@@ -62,10 +77,18 @@ class DailyBacktestConfig:
     initial_equity: float = 100_000.0
     max_abs_return: float | None = 1.0
     covariance_warning_threshold: float = 1e6
+    use_point_in_time_universe: bool = True
+    missing_execution_policy: str = "fail"
+    missing_price_policy: str = "fail"
+    missing_exit_long_return: float = -1.0
+    missing_exit_short_return: float = 1.0
+    cost_basis: str = "full_notional"
 
     def validate(self) -> None:
         if self.rebalance_frequency != "daily":
             raise NotImplementedError("Only daily rebalance_frequency is implemented")
+        if self.start_date is not None and self.end_date is not None and pd.Timestamp(self.start_date) > pd.Timestamp(self.end_date):
+            raise ValueError("start_date must be <= end_date")
         if self.holding_period_days < 1:
             raise ValueError("holding_period_days must be >= 1")
         if not (0 < self.short_quantile < 0.5):
@@ -74,8 +97,16 @@ class DailyBacktestConfig:
             raise ValueError("long_quantile must be in (0.5, 1)")
         if self.gross_exposure <= 0:
             raise ValueError("gross_exposure must be positive")
+        if self.max_net_exposure < 0:
+            raise ValueError("max_net_exposure must be non-negative")
         if self.max_position_weight <= 0:
             raise ValueError("max_position_weight must be positive")
+        if self.min_price < 0:
+            raise ValueError("min_price must be non-negative")
+        if self.turnover_cap is not None and self.turnover_cap < 0:
+            raise ValueError("turnover_cap must be non-negative")
+        if self.turnover_penalty_bps < 0:
+            raise ValueError("turnover_penalty_bps must be non-negative")
         if self.execution_price_mode not in {"open", "vwap_proxy", "open_plus_slippage"}:
             raise ValueError("execution_price_mode must be open, vwap_proxy, or open_plus_slippage")
         if self.forecast_method == "oracle":
@@ -84,6 +115,34 @@ class DailyBacktestConfig:
             raise ValueError("transaction_cost_bps and slippage_bps must be non-negative")
         if self.min_net_alpha_after_cost_bps < 0:
             raise ValueError("min_net_alpha_after_cost_bps must be non-negative")
+        if self.volatility_target_annual is not None and self.volatility_target_annual <= 0:
+            raise ValueError("volatility_target_annual must be positive when set")
+        if self.volatility_lookback_days < 2:
+            raise ValueError("volatility_lookback_days must be >= 2")
+        if self.max_leverage_multiplier <= 0:
+            raise ValueError("max_leverage_multiplier must be positive")
+        if not (0 < self.var_confidence < 1):
+            raise ValueError("var_confidence must be in (0, 1)")
+        if self.var_lookback_days < 2:
+            raise ValueError("var_lookback_days must be >= 2")
+        if self.max_daily_var is not None and self.max_daily_var <= 0:
+            raise ValueError("max_daily_var must be positive when set")
+        if self.max_drawdown_limit is not None and self.max_drawdown_limit <= 0:
+            raise ValueError("max_drawdown_limit must be positive when set")
+        if self.drawdown_control_start < 0:
+            raise ValueError("drawdown_control_start must be non-negative")
+        if self.max_drawdown_limit is not None and self.drawdown_control_start >= self.max_drawdown_limit:
+            raise ValueError("drawdown_control_start must be less than max_drawdown_limit")
+        if not (0 <= self.min_risk_scale <= self.max_leverage_multiplier):
+            raise ValueError("min_risk_scale must be between 0 and max_leverage_multiplier")
+        if self.missing_execution_policy not in {"fail", "drop"}:
+            raise ValueError("missing_execution_policy must be fail or drop")
+        if self.missing_price_policy not in {"fail", "terminal_return", "zero"}:
+            raise ValueError("missing_price_policy must be fail, terminal_return, or zero")
+        if self.cost_basis not in {"full_notional", "half_turnover"}:
+            raise ValueError("cost_basis must be full_notional or half_turnover")
+        if not np.isfinite(self.missing_exit_long_return) or not np.isfinite(self.missing_exit_short_return):
+            raise ValueError("missing exit returns must be finite")
 
 
 @dataclass
@@ -110,7 +169,7 @@ def config_from_dict(raw: dict[str, Any]) -> DailyBacktestConfig:
     unknown = set(raw) - names
     if unknown:
         raise ValueError(f"Unknown close-to-next-open config keys: {sorted(unknown)}")
-    path_fields = {"input_dir", "out_dir", "daily_bars_path", "reports_dir"}
+    path_fields = {"input_dir", "out_dir", "daily_bars_path", "execution_bars_path", "reports_dir"}
     clean = dict(raw)
     for key in path_fields & set(clean):
         clean[key] = None if clean[key] in {None, ""} else Path(clean[key])
@@ -128,10 +187,20 @@ def load_processed_inputs(input_dir: Path) -> dict[str, Any]:
     tickers_df = pd.read_csv(input_dir / "tickers.csv")
     ticker_col = "ticker" if "ticker" in tickers_df.columns else tickers_df.columns[0]
     tickers = tickers_df[ticker_col].astype(str).tolist()[: X.shape[1]]
+    ticker_metadata = tickers_df.iloc[: X.shape[1]].copy()
     factor_df = pd.read_csv(input_dir / "factor_names.csv")
     factor_col = "factor" if "factor" in factor_df.columns else factor_df.columns[0]
     factor_names = factor_df[factor_col].astype(str).tolist()[: X.shape[2]]
-    return {"X": X, "f": f, "r": r, "tradable": tradable, "dates": pd.DatetimeIndex(dates), "tickers": tickers, "factor_names": factor_names}
+    return {
+        "X": X,
+        "f": f,
+        "r": r,
+        "tradable": tradable,
+        "dates": pd.DatetimeIndex(dates),
+        "tickers": tickers,
+        "ticker_metadata": ticker_metadata,
+        "factor_names": factor_names,
+    }
 
 
 def load_daily_price_panels(path: Path | None, dates: pd.DatetimeIndex, tickers: list[str]) -> dict[str, pd.DataFrame]:
@@ -162,6 +231,74 @@ def daily_bars_date_range(path: Path | None) -> tuple[str | None, str | None]:
     return dates.min().date().isoformat(), dates.max().date().isoformat()
 
 
+def execution_bars_path(cfg: DailyBacktestConfig) -> Path | None:
+    return cfg.execution_bars_path or cfg.daily_bars_path
+
+
+def _parse_metadata_date(value: Any) -> pd.Timestamp | pd.NaT:
+    if value is None or pd.isna(value):
+        return pd.NaT
+    ts = pd.to_datetime(value, errors="coerce", utc=True)
+    if pd.isna(ts):
+        return pd.NaT
+    return pd.Timestamp(ts).tz_convert(None).normalize()
+
+
+def build_point_in_time_universe_mask(
+    ticker_metadata: pd.DataFrame,
+    dates: pd.DatetimeIndex,
+    tickers: list[str],
+) -> tuple[np.ndarray, list[str], dict[str, Any]]:
+    warnings: list[str] = []
+    mask = np.ones((len(dates), len(tickers)), dtype=bool)
+    stats: dict[str, Any] = {
+        "enabled": True,
+        "has_list_date": False,
+        "has_delisted_utc": False,
+        "tickers_with_listing_date": 0,
+        "tickers_with_delisted_date": 0,
+        "tickers_missing_metadata": 0,
+        "blocked_observations": 0,
+    }
+    if ticker_metadata.empty or "ticker" not in ticker_metadata.columns:
+        warnings.append("Point-in-time universe mask could not use ticker metadata; tickers.csv has no ticker metadata.")
+        stats["tickers_missing_metadata"] = len(tickers)
+        return mask, warnings, stats
+
+    meta = ticker_metadata.copy()
+    meta["ticker"] = meta["ticker"].astype(str)
+    meta = meta.drop_duplicates("ticker", keep="first").set_index("ticker")
+    list_col = next((c for c in ["list_date", "list_date_utc", "listed_utc", "start_date"] if c in meta.columns), None)
+    delist_col = "delisted_utc" if "delisted_utc" in meta.columns else None
+    stats["has_list_date"] = list_col is not None
+    stats["has_delisted_utc"] = delist_col is not None
+    if list_col is None:
+        warnings.append("Point-in-time universe mask has no list_date column; it can only enforce delisted_utc and bar availability.")
+    if delist_col is None:
+        warnings.append("Point-in-time universe mask has no delisted_utc column; inactive tickers cannot be date-bounded by delist date.")
+
+    date_values = pd.DatetimeIndex(dates).normalize()
+    before = int(mask.sum())
+    for i, ticker in enumerate(tickers):
+        if ticker not in meta.index:
+            mask[:, i] = False
+            stats["tickers_missing_metadata"] += 1
+            continue
+        row = meta.loc[ticker]
+        if list_col is not None:
+            listed = _parse_metadata_date(row.get(list_col))
+            if pd.notna(listed):
+                mask[:, i] &= date_values >= listed
+                stats["tickers_with_listing_date"] += 1
+        if delist_col is not None:
+            delisted = _parse_metadata_date(row.get(delist_col))
+            if pd.notna(delisted):
+                mask[:, i] &= date_values < delisted
+                stats["tickers_with_delisted_date"] += 1
+    stats["blocked_observations"] = before - int(mask.sum())
+    return mask, warnings, stats
+
+
 def check_timing(dates: pd.DatetimeIndex, f: np.ndarray, f_pred: np.ndarray, method: str) -> list[str]:
     warnings: list[str] = []
     if not dates.is_monotonic_increasing:
@@ -184,9 +321,17 @@ def compute_alpha_and_contributions(X: np.ndarray, f_pred: np.ndarray) -> tuple[
     return alpha, contrib
 
 
-def _rank_weights_one_day(alpha: np.ndarray, tradable: np.ndarray, dollar_volume: np.ndarray | None, cfg: DailyBacktestConfig) -> tuple[np.ndarray, dict[str, Any]]:
+def _rank_weights_one_day(
+    alpha: np.ndarray,
+    tradable: np.ndarray,
+    dollar_volume: np.ndarray | None,
+    cfg: DailyBacktestConfig,
+    price: np.ndarray | None = None,
+) -> tuple[np.ndarray, dict[str, Any]]:
     base_valid = np.isfinite(alpha) & tradable
     valid = base_valid.copy()
+    if price is not None and cfg.min_price > 0:
+        valid &= np.isfinite(price) & (price >= cfg.min_price)
     if dollar_volume is not None:
         valid &= np.isfinite(dollar_volume) & (dollar_volume >= cfg.min_dollar_volume)
     trading_cost = (cfg.transaction_cost_bps + cfg.slippage_bps) / 10_000.0
@@ -203,9 +348,12 @@ def _rank_weights_one_day(alpha: np.ndarray, tradable: np.ndarray, dollar_volume
         "trading_cost_return": trading_cost,
         "min_net_alpha_after_cost": min_net_after_cost,
         "filtered_missing_or_untradable": int((~base_valid).sum()),
+        "filtered_price": 0,
         "filtered_liquidity": 0,
         "filtered_alpha_threshold": int((base_valid & ~passes_cost_threshold).sum()),
     }
+    if price is not None and cfg.min_price > 0:
+        info["filtered_price"] = int((base_valid & ~(np.isfinite(price) & (price >= cfg.min_price))).sum())
     if dollar_volume is not None:
         info["filtered_liquidity"] = int((base_valid & ~(np.isfinite(dollar_volume) & (dollar_volume >= cfg.min_dollar_volume))).sum())
     if vals.size < 2 * cfg.min_names_per_side:
@@ -235,20 +383,41 @@ def _rank_weights_one_day(alpha: np.ndarray, tradable: np.ndarray, dollar_volume
     gross = float(np.abs(w).sum())
     if gross > cfg.gross_exposure and gross > 0:
         w *= cfg.gross_exposure / gross
+    net = float(w.sum())
+    if net > cfg.max_net_exposure:
+        positive = w > 0
+        positive_sum = float(w[positive].sum())
+        if positive_sum > 0:
+            w[positive] *= max(0.0, positive_sum - (net - cfg.max_net_exposure)) / positive_sum
+    elif net < -cfg.max_net_exposure:
+        negative = w < 0
+        negative_sum = float(-w[negative].sum())
+        if negative_sum > 0:
+            w[negative] *= max(0.0, negative_sum - (-cfg.max_net_exposure - net)) / negative_sum
     return w, info
 
 
-def build_daily_weights(alpha: np.ndarray, tradable: np.ndarray, dollar_volume: np.ndarray | None, cfg: DailyBacktestConfig) -> tuple[np.ndarray, pd.DataFrame]:
+def build_daily_weights(
+    alpha: np.ndarray,
+    tradable: np.ndarray,
+    dollar_volume: np.ndarray | None,
+    cfg: DailyBacktestConfig,
+    price: np.ndarray | None = None,
+) -> tuple[np.ndarray, pd.DataFrame]:
     weights = np.zeros_like(alpha, dtype=float)
     rows: list[dict[str, Any]] = []
     prev = np.zeros(alpha.shape[1], dtype=float)
     for t in range(alpha.shape[0]):
         dv = None if dollar_volume is None else dollar_volume[t]
-        target, info = _rank_weights_one_day(alpha[t], tradable[t], dv, cfg)
+        price_t = None if price is None else price[t]
+        target, info = _rank_weights_one_day(alpha[t], tradable[t], dv, cfg, price=price_t)
         if cfg.turnover_cap is not None:
             turnover = 0.5 * np.abs(target - prev).sum()
             if turnover > cfg.turnover_cap and turnover > 0:
                 target = prev + (target - prev) * (cfg.turnover_cap / turnover)
+        if price_t is not None and cfg.min_price > 0:
+            price_ok = np.isfinite(price_t) & (price_t >= cfg.min_price)
+            target[~price_ok] = 0.0
         weights[t] = target
         info.update({"row": t, "final_number_long": int((target > 0).sum()), "final_number_short": int((target < 0).sum())})
         rows.append(info)
@@ -256,7 +425,30 @@ def build_daily_weights(alpha: np.ndarray, tradable: np.ndarray, dollar_volume: 
     return weights, pd.DataFrame(rows)
 
 
-def compute_execution_returns(weights: np.ndarray, dates: pd.DatetimeIndex, panels: dict[str, pd.DataFrame], saved_r: np.ndarray | None, cfg: DailyBacktestConfig) -> tuple[np.ndarray, pd.DataFrame, list[str]]:
+def _format_missing_price_samples(
+    missing: np.ndarray,
+    dates: pd.DatetimeIndex,
+    tickers: list[str] | None,
+    limit: int = 8,
+) -> str:
+    rows = np.argwhere(missing)
+    parts = []
+    for t, i in rows[:limit]:
+        ticker = tickers[i] if tickers is not None and i < len(tickers) else str(i)
+        parts.append(f"{pd.Timestamp(dates[t]).date().isoformat()}:{ticker}")
+    suffix = "" if len(rows) <= limit else f" ... +{len(rows) - limit} more"
+    return ", ".join(parts) + suffix
+
+
+def compute_execution_returns(
+    weights: np.ndarray,
+    dates: pd.DatetimeIndex,
+    panels: dict[str, pd.DataFrame],
+    saved_r: np.ndarray | None,
+    cfg: DailyBacktestConfig,
+    tickers: list[str] | None = None,
+    return_panels: dict[str, pd.DataFrame] | None = None,
+) -> tuple[np.ndarray, pd.DataFrame, list[str]]:
     warnings: list[str] = []
     T, N = weights.shape
     realized = np.full((T, N), np.nan)
@@ -266,20 +458,88 @@ def compute_execution_returns(weights: np.ndarray, dates: pd.DatetimeIndex, pane
     if {"open", "close"}.issubset(panels):
         open_arr = panels["open"].to_numpy(dtype=float)
         close_arr = panels["close"].to_numpy(dtype=float)
+        pnl_panels = return_panels if return_panels is not None and {"open", "close"}.issubset(return_panels) else panels
+        return_open_arr = pnl_panels["open"].to_numpy(dtype=float)
+        return_close_arr = pnl_panels["close"].to_numpy(dtype=float)
         signal_price = close_arr.copy()
+        return_execution_price = np.full((T, N), np.nan)
+        return_exit_price = np.full((T, N), np.nan)
         for t in range(T - cfg.holding_period_days):
             exec_t = t + 1
             exit_t = min(exec_t + cfg.holding_period_days, T - 1)
             execution_price[t] = open_arr[exec_t]
             exit_price[t] = open_arr[exit_t] if exit_t != exec_t else close_arr[exec_t]
-            realized[t] = exit_price[t] / execution_price[t] - 1.0
+            return_execution_price[t] = return_open_arr[exec_t]
+            return_exit_price[t] = return_open_arr[exit_t] if exit_t != exec_t else return_close_arr[exec_t]
+            valid_exec = np.isfinite(execution_price[t]) & (execution_price[t] > 0)
+            valid_exit = np.isfinite(exit_price[t]) & (exit_price[t] > 0)
+            valid_return_exec = np.isfinite(return_execution_price[t]) & (return_execution_price[t] > 0)
+            valid_return_exit = np.isfinite(return_exit_price[t]) & (return_exit_price[t] > 0)
+            valid = valid_exec & valid_exit & valid_return_exec & valid_return_exit
+            with np.errstate(divide="ignore", invalid="ignore"):
+                realized[t, valid] = return_exit_price[t, valid] / return_execution_price[t, valid] - 1.0
+
+        executable = np.zeros((T, N), dtype=bool)
+        executable[: max(0, T - cfg.holding_period_days), :] = True
+        active = executable & (np.abs(weights) > 1e-12)
+        missing_execution = active & ~(np.isfinite(execution_price) & (execution_price > 0))
+        if missing_execution.any():
+            sample = _format_missing_price_samples(missing_execution, dates, tickers)
+            if cfg.missing_execution_policy == "fail":
+                raise RuntimeError(
+                    "Missing next-open execution price for active positions; refusing to mark these trades as zero return. "
+                    f"count={int(missing_execution.sum())}, sample={sample}"
+                )
+            weights[missing_execution] = 0.0
+            warnings.append(
+                "Missing next-open execution prices caused orders to be treated as unfilled and removed from realized weights "
+                f"because missing_execution_policy=drop. count={int(missing_execution.sum())}, sample={sample}"
+            )
+            active = executable & (np.abs(weights) > 1e-12)
+        missing_exit = active & np.isfinite(execution_price) & (execution_price > 0) & ~(np.isfinite(exit_price) & (exit_price > 0))
+        if missing_exit.any():
+            if cfg.missing_price_policy == "fail":
+                sample = _format_missing_price_samples(missing_exit, dates, tickers)
+                raise RuntimeError(
+                    "Missing exit price for active positions; refusing to mark these trades as zero return. "
+                    f"count={int(missing_exit.sum())}, sample={sample}. "
+                    "Set missing_price_policy=terminal_return only when a conservative delist haircut is intended."
+                )
+            if cfg.missing_price_policy == "terminal_return":
+                realized[missing_exit & (weights > 0)] = cfg.missing_exit_long_return
+                realized[missing_exit & (weights < 0)] = cfg.missing_exit_short_return
+                warnings.append(
+                    "Missing exit prices were replaced with configured terminal returns "
+                    f"(long={cfg.missing_exit_long_return}, short={cfg.missing_exit_short_return})."
+                )
+            elif cfg.missing_price_policy == "zero":
+                realized[missing_exit] = 0.0
+                warnings.append("Missing exit prices were replaced with zero returns because missing_price_policy=zero.")
+        missing_return_price = active & np.isfinite(execution_price) & (execution_price > 0) & np.isfinite(exit_price) & (exit_price > 0) & ~np.isfinite(realized)
+        if missing_return_price.any():
+            sample = _format_missing_price_samples(missing_return_price, dates, tickers)
+            raise RuntimeError(
+                "Adjusted return price is missing for active positions with valid raw execution prices. "
+                f"count={int(missing_return_price.sum())}, sample={sample}"
+            )
     elif saved_r is not None:
         warnings.append("daily_bars_path was not provided/found; realized returns fall back to saved r.npy, so execution_price is unavailable.")
         realized = saved_r.copy()
     else:
         warnings.append("No daily bars or r.npy available; PnL cannot be computed.")
     if cfg.max_abs_return is not None:
-        realized = np.where(np.abs(realized) <= cfg.max_abs_return, realized, np.nan)
+        clipped = np.isfinite(realized) & (np.abs(realized) > cfg.max_abs_return)
+        realized = np.where(~clipped, realized, np.nan)
+        active_mask = locals().get("active")
+        if isinstance(active_mask, np.ndarray):
+            clipped_active = clipped & active_mask
+            if clipped_active.any():
+                sample = _format_missing_price_samples(clipped_active, dates, tickers)
+                raise RuntimeError(
+                    "Execution return exceeded max_abs_return for active positions; refusing to convert it to zero return. "
+                    f"count={int(clipped_active.sum())}, sample={sample}. "
+                    "Increase max_abs_return or set it to null only after inspecting the raw prices."
+                )
     prices = pd.DataFrame({
         "signal_date": np.repeat(dates.to_numpy(), N),
         "execution_date": np.repeat(np.r_[dates.to_numpy()[1:], np.datetime64("NaT")], N),
@@ -292,22 +552,109 @@ def compute_execution_returns(weights: np.ndarray, dates: pd.DatetimeIndex, pane
     return realized, prices, warnings
 
 
-def portfolio_pnl(weights: np.ndarray, realized: np.ndarray, cfg: DailyBacktestConfig) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _historical_var(returns: list[float], confidence: float) -> float:
+    hist = np.asarray([x for x in returns if np.isfinite(x)], dtype=float)
+    if hist.size < 2:
+        return np.nan
+    return float(max(0.0, -np.nanquantile(hist, 1.0 - confidence)))
+
+
+def _drawdown_scale(drawdown: float, cfg: DailyBacktestConfig) -> float:
+    if cfg.max_drawdown_limit is None or drawdown <= cfg.drawdown_control_start:
+        return cfg.max_leverage_multiplier
+    if drawdown >= cfg.max_drawdown_limit:
+        return cfg.min_risk_scale
+    span = cfg.max_drawdown_limit - cfg.drawdown_control_start
+    progress = (drawdown - cfg.drawdown_control_start) / span
+    return cfg.max_leverage_multiplier - progress * (cfg.max_leverage_multiplier - cfg.min_risk_scale)
+
+
+def _risk_scale_from_history(history: list[float], equity: float, peak: float, cfg: DailyBacktestConfig) -> dict[str, float]:
+    scales = {"vol_scale": cfg.max_leverage_multiplier, "var_scale": cfg.max_leverage_multiplier, "drawdown_scale": cfg.max_leverage_multiplier}
+    if cfg.volatility_target_annual is not None:
+        hist = np.asarray(history[-cfg.volatility_lookback_days :], dtype=float)
+        hist = hist[np.isfinite(hist)]
+        if hist.size >= 2:
+            realized_vol = float(np.nanstd(hist, ddof=1) * np.sqrt(252.0))
+            if realized_vol > 1e-12:
+                scales["vol_scale"] = min(cfg.max_leverage_multiplier, cfg.volatility_target_annual / realized_vol)
+    if cfg.max_daily_var is not None:
+        var = _historical_var(history[-cfg.var_lookback_days :], cfg.var_confidence)
+        if np.isfinite(var) and var > 1e-12:
+            scales["var_scale"] = min(cfg.max_leverage_multiplier, cfg.max_daily_var / var)
+    drawdown = max(0.0, 1.0 - equity / peak) if peak > 0 else 0.0
+    scales["drawdown_scale"] = _drawdown_scale(drawdown, cfg)
+    scales["risk_scale"] = max(cfg.min_risk_scale, min(scales.values()))
+    scales["rolling_daily_var"] = _historical_var(history[-cfg.var_lookback_days :], cfg.var_confidence)
+    hist = np.asarray(history[-cfg.volatility_lookback_days :], dtype=float)
+    hist = hist[np.isfinite(hist)]
+    scales["rolling_volatility_annual"] = float(np.nanstd(hist, ddof=1) * np.sqrt(252.0)) if hist.size >= 2 else np.nan
+    scales["drawdown"] = drawdown
+    return scales
+
+
+def _cost_notional_from_half_turnover(half_turnover: float, cfg: DailyBacktestConfig) -> float:
+    if cfg.cost_basis == "half_turnover":
+        return half_turnover
+    return 2.0 * half_turnover
+
+
+def apply_dynamic_risk_controls(weights: np.ndarray, realized: np.ndarray, cfg: DailyBacktestConfig) -> tuple[np.ndarray, pd.DataFrame]:
+    adjusted = np.zeros_like(weights, dtype=float)
+    rows: list[dict[str, float]] = []
+    prev = np.zeros(weights.shape[1], dtype=float)
+    history: list[float] = []
+    equity = 1.0
+    peak = 1.0
+    for t in range(weights.shape[0]):
+        scales = _risk_scale_from_history(history, equity, peak, cfg)
+        target = weights[t] * scales["risk_scale"]
+        if cfg.turnover_cap is not None:
+            turnover = 0.5 * float(np.abs(target - prev).sum())
+            if turnover > cfg.turnover_cap and turnover > 0:
+                target = prev + (target - prev) * (cfg.turnover_cap / turnover)
+        adjusted[t] = target
+        r = np.where(np.isfinite(realized[t]), realized[t], 0.0)
+        gross_turnover = 0.5 * float(np.abs(target - prev).sum())
+        cost_rate = (cfg.transaction_cost_bps + cfg.slippage_bps + cfg.turnover_penalty_bps) / 10_000.0
+        day_ret = float(np.sum(target * r)) - _cost_notional_from_half_turnover(gross_turnover, cfg) * cost_rate if np.abs(target).sum() > 0 else 0.0
+        history.append(day_ret)
+        equity *= 1.0 + day_ret
+        peak = max(peak, equity)
+        rows.append({
+            "row": float(t),
+            "risk_scale": scales["risk_scale"],
+            "vol_scale": scales["vol_scale"],
+            "var_scale": scales["var_scale"],
+            "drawdown_scale": scales["drawdown_scale"],
+            "rolling_volatility_annual": scales["rolling_volatility_annual"],
+            "rolling_daily_var": scales["rolling_daily_var"],
+            "drawdown": scales["drawdown"],
+        })
+        prev = target
+    return adjusted, pd.DataFrame(rows)
+
+
+def portfolio_pnl(weights: np.ndarray, realized: np.ndarray, cfg: DailyBacktestConfig) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     gross_turnover = np.full(weights.shape[0], np.nan)
     ret = np.full(weights.shape[0], np.nan)
     cost = np.full(weights.shape[0], 0.0)
+    turnover_penalty = np.full(weights.shape[0], 0.0)
     prev = np.zeros(weights.shape[1], dtype=float)
     cost_rate = (cfg.transaction_cost_bps + cfg.slippage_bps) / 10_000.0
+    turnover_penalty_rate = cfg.turnover_penalty_bps / 10_000.0
     for t in range(weights.shape[0]):
         gross_turnover[t] = 0.5 * float(np.abs(weights[t] - prev).sum())
         active = np.abs(weights[t]) > 0
         if active.any():
             r = np.where(np.isfinite(realized[t]), realized[t], 0.0)
             ret[t] = float(np.sum(weights[t] * r))
-            cost[t] = gross_turnover[t] * cost_rate
-            ret[t] -= cost[t]
+            cost_notional = _cost_notional_from_half_turnover(float(gross_turnover[t]), cfg)
+            cost[t] = cost_notional * cost_rate
+            turnover_penalty[t] = cost_notional * turnover_penalty_rate
+            ret[t] -= cost[t] + turnover_penalty[t]
         prev = weights[t]
-    return ret, gross_turnover, cost
+    return ret, gross_turnover, cost, turnover_penalty
 
 
 def _safe_git_hash() -> str | None:
@@ -364,6 +711,7 @@ def build_alpha_rankings(
     previous_weights: np.ndarray,
     dollar_volume: np.ndarray | None,
     cfg: DailyBacktestConfig,
+    price: np.ndarray | None = None,
 ) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     for t, date in enumerate(dates):
@@ -385,6 +733,7 @@ def build_alpha_rankings(
                 side = "SHORT" if weights[t, i] < 0 else "SELL"
             bucket = bucket_map.get(i, np.nan)
             liquidity_flag = bool(dollar_volume is None or (np.isfinite(dollar_volume[t, i]) and dollar_volume[t, i] >= cfg.min_dollar_volume))
+            price_flag = bool(price is None or cfg.min_price <= 0 or (np.isfinite(price[t, i]) and price[t, i] >= cfg.min_price))
             risk_flag = bool(abs(weights[t, i]) <= cfg.max_position_weight + 1e-12)
             trading_cost_bps = cfg.transaction_cost_bps + cfg.slippage_bps
             directional_alpha = -score[i] if weights[t, i] < 0 else score[i]
@@ -406,7 +755,8 @@ def build_alpha_rankings(
                     f"{side} because predicted alpha is in the {direction}. "
                     f"Net alpha after estimated {trading_cost_bps:.1f} bps trading cost is {net_alpha_after_cost_bps:.2f} bps "
                     f"versus threshold {cfg.min_net_alpha_after_cost_bps:.2f} bps. "
-                    f"Main contributors were {main}. Liquidity filter {'passed' if liquidity_flag else 'failed'}."
+                    f"Main contributors were {main}. Price filter {'passed' if price_flag else 'failed'}; "
+                    f"liquidity filter {'passed' if liquidity_flag else 'failed'}."
                 )
             rows.append({
                 "signal_date": date,
@@ -431,6 +781,7 @@ def build_alpha_rankings(
                 "factor_contributions": json.dumps({factor_names[k]: float(c[k]) for k in range(len(factor_names)) if np.isfinite(c[k])}),
                 "residual_score": np.nan,
                 "outlier_flag": False,
+                "price_flag": price_flag,
                 "liquidity_flag": liquidity_flag,
                 "risk_flag": risk_flag,
                 "reason_text": reason,
@@ -468,6 +819,7 @@ def write_residual_heatmap(residuals: pd.DataFrame, path: Path, max_tickers: int
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
         import matplotlib.pyplot as plt
+        from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 
         if residuals.empty:
             fig, ax = plt.subplots(figsize=(8, 3))
@@ -478,12 +830,24 @@ def write_residual_heatmap(residuals: pd.DataFrame, path: Path, max_tickers: int
             score = zwide.abs().max(axis=1).sort_values(ascending=False)
             zwide = zwide.loc[score.head(max_tickers).index, zwide.columns[-lookback:]]
             fig, ax = plt.subplots(figsize=(12, max(4, min(14, len(zwide) * 0.18))))
-            im = ax.imshow(zwide.to_numpy(dtype=float), aspect="auto", cmap="RdBu_r", vmin=-3, vmax=3)
+            zvalues = zwide.to_numpy(dtype=float)
+            zplot = np.sign(zvalues) * np.sqrt(np.abs(zvalues))
+            cmap = LinearSegmentedColormap.from_list(
+                "residual_blue_yellow_red",
+                ("#2166ac", "#fff176", "#b2182b"),
+            ).copy()
+            cmap.set_bad("lightgray")
+            im = ax.imshow(
+                np.ma.masked_invalid(zplot),
+                aspect="auto",
+                cmap=cmap,
+                norm=TwoSlopeNorm(vmin=-np.sqrt(3.0), vcenter=0.0, vmax=np.sqrt(3.0)),
+            )
             ax.set_yticks(range(len(zwide.index)))
             ax.set_yticklabels(zwide.index, fontsize=6)
             ax.set_xticks(range(len(zwide.columns)))
             ax.set_xticklabels([pd.Timestamp(x).date().isoformat() for x in zwide.columns], rotation=90, fontsize=6)
-            fig.colorbar(im, ax=ax, label="Residual z-score")
+            fig.colorbar(im, ax=ax, label="Signed sqrt(abs residual z-score)")
             fig.tight_layout()
         fig.savefig(path, dpi=150)
         plt.close(fig)
@@ -518,6 +882,7 @@ def build_quantile_summary(dates: pd.DatetimeIndex, alpha: np.ndarray, realized:
                 "average_volatility": np.nan,
                 "long_threshold_alpha": filter_info.loc[t, "long_threshold_alpha"] if t in filter_info.index else np.nan,
                 "short_threshold_alpha": filter_info.loc[t, "short_threshold_alpha"] if t in filter_info.index else np.nan,
+                "filtered_out_price": filter_info.loc[t, "filtered_price"] if t in filter_info.index else np.nan,
                 "filtered_out_liquidity": filter_info.loc[t, "filtered_liquidity"] if t in filter_info.index else np.nan,
                 "filtered_out_missing_data": filter_info.loc[t, "filtered_missing_or_untradable"] if t in filter_info.index else np.nan,
                 "filtered_out_alpha_threshold": filter_info.loc[t, "filtered_alpha_threshold"] if t in filter_info.index else np.nan,
@@ -535,19 +900,54 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
     data = load_processed_inputs(cfg.input_dir)
     X, f, saved_r, tradable = data["X"], data["f"], data["r"], data["tradable"]
     dates, tickers, factor_names = data["dates"], data["tickers"], data["factor_names"]
+    ticker_metadata = data["ticker_metadata"]
     f_pred = predict_factor_returns(f, method=cfg.forecast_method, lookback=cfg.lookback, ewma_halflife=cfg.ewma_halflife, min_periods=cfg.min_periods)
     warnings = check_timing(dates, f, f_pred, cfg.forecast_method)
-    panels = load_daily_price_panels(cfg.daily_bars_path, dates, tickers)
+    if cfg.start_date is not None or cfg.end_date is not None:
+        start = pd.Timestamp(cfg.start_date).normalize() if cfg.start_date is not None else dates[0]
+        end = pd.Timestamp(cfg.end_date).normalize() if cfg.end_date is not None else dates[-1]
+        date_mask = (dates >= start) & (dates <= end)
+        if not bool(date_mask.any()):
+            raise ValueError(f"No processed dates overlap requested range {start.date()}..{end.date()}")
+        X = X[date_mask]
+        f = f[date_mask]
+        f_pred = f_pred[date_mask]
+        saved_r = saved_r[date_mask] if saved_r is not None else None
+        tradable = tradable[date_mask]
+        dates = dates[date_mask]
+    pit_stats = {"enabled": False}
+    if cfg.use_point_in_time_universe:
+        pit_mask, pit_warnings, pit_stats = build_point_in_time_universe_mask(ticker_metadata, dates, tickers)
+        tradable = np.asarray(tradable, dtype=bool) & pit_mask
+        warnings.extend(pit_warnings)
+    exec_bars_path = execution_bars_path(cfg)
+    panels = load_daily_price_panels(exec_bars_path, dates, tickers)
+    return_panels = load_daily_price_panels(cfg.daily_bars_path, dates, tickers) if cfg.daily_bars_path is not None else panels
     bars_start, bars_end = daily_bars_date_range(cfg.daily_bars_path)
+    exec_bars_start, exec_bars_end = daily_bars_date_range(exec_bars_path)
     dollar_volume = None
+    signal_price = None
     if {"close", "volume"}.issubset(panels):
-        dollar_volume = panels["close"].to_numpy(dtype=float) * panels["volume"].to_numpy(dtype=float)
+        signal_price = panels["close"].to_numpy(dtype=float)
+        dollar_volume = signal_price * panels["volume"].to_numpy(dtype=float)
     alpha, contrib = compute_alpha_and_contributions(X, f_pred)
-    weights, filter_info = build_daily_weights(alpha, tradable, dollar_volume, cfg)
-    previous_weights = np.vstack([np.zeros((1, weights.shape[1])), weights[:-1]])
-    realized, price_frame, price_warnings = compute_execution_returns(weights, dates, panels, saved_r, cfg)
+    weights, filter_info = build_daily_weights(alpha, tradable, dollar_volume, cfg, price=signal_price)
+    realized, price_frame, price_warnings = compute_execution_returns(
+        weights,
+        dates,
+        panels,
+        saved_r,
+        cfg,
+        tickers=tickers,
+        return_panels=return_panels,
+    )
     warnings.extend(price_warnings)
-    returns, turnover, costs = portfolio_pnl(weights, realized, cfg)
+    first_non_executable = max(0, len(dates) - cfg.holding_period_days)
+    if first_non_executable < weights.shape[0]:
+        weights[first_non_executable:] = 0.0
+    weights, risk_controls = apply_dynamic_risk_controls(weights, realized, cfg)
+    previous_weights = np.vstack([np.zeros((1, weights.shape[1])), weights[:-1]])
+    returns, turnover, costs, turnover_penalty = portfolio_pnl(weights, realized, cfg)
     equity = np.cumprod(1.0 + np.where(np.isfinite(returns), returns, 0.0))
     daily = pd.DataFrame({
         "signal_date": dates,
@@ -557,7 +957,9 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
         "portfolio_return": returns,
         "cumulative_return": equity - 1.0,
         "turnover": turnover,
+        "traded_notional": turnover * 2.0,
         "transaction_cost": costs,
+        "turnover_penalty": turnover_penalty,
         "gross_exposure": np.abs(weights).sum(axis=1),
         "net_exposure": weights.sum(axis=1),
         "long_exposure": np.clip(weights, 0, None).sum(axis=1),
@@ -565,7 +967,22 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
         "number_long": (weights > 0).sum(axis=1),
         "number_short": (weights < 0).sum(axis=1),
     })
-    alpha_rankings = build_alpha_rankings(dates, tickers, factor_names, alpha, contrib, X, f_pred, weights, previous_weights, dollar_volume, cfg)
+    if not risk_controls.empty:
+        daily = daily.join(risk_controls.drop(columns=["row"]).reset_index(drop=True))
+    alpha_rankings = build_alpha_rankings(
+        dates,
+        tickers,
+        factor_names,
+        alpha,
+        contrib,
+        X,
+        f_pred,
+        weights,
+        previous_weights,
+        dollar_volume,
+        cfg,
+        price=signal_price,
+    )
     factor_report = _factor_frame(dates, factor_names, f, f_pred)
     residuals, outliers = compute_residuals(dates, tickers, X, f, saved_r, cfg.residual_outlier_z_threshold)
     quantile = build_quantile_summary(dates, alpha, realized, residuals, weights, dollar_volume, cfg, filter_info.set_index("row"))
@@ -586,9 +1003,17 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
     execution_quality["close_price"] = execution_quality["exit_price"]
     execution_quality["slippage_bps"] = cfg.slippage_bps
     execution_quality["transaction_cost"] = execution_quality["planned_weight_delta"].abs() * cfg.initial_equity * (cfg.transaction_cost_bps / 10_000.0)
+    execution_quality["estimated_slippage_cost"] = execution_quality["planned_weight_delta"].abs() * cfg.initial_equity * (cfg.slippage_bps / 10_000.0)
+    execution_quality["estimated_total_cost"] = execution_quality["transaction_cost"] + execution_quality["estimated_slippage_cost"]
+    execution_quality["cost_basis"] = "order_notional"
     execution_quality["order_status"] = "filled"
     execution_quality["rejected_reason"] = ""
-    execution_quality = execution_quality[["date", "ticker", "side", "planned_quantity", "filled_quantity", "fill_ratio", "planned_price", "average_fill_price", "arrival_price", "close_price", "slippage_bps", "transaction_cost", "order_status", "rejected_reason"]]
+    execution_quality = execution_quality[[
+        "date", "ticker", "side", "planned_quantity", "filled_quantity", "fill_ratio",
+        "planned_price", "average_fill_price", "arrival_price", "close_price",
+        "slippage_bps", "transaction_cost", "estimated_slippage_cost",
+        "estimated_total_cost", "cost_basis", "order_status", "rejected_reason",
+    ]]
     target_positions = alpha_rankings[[
         "signal_date", "ticker", "target_weight", "current_weight", "order_weight_delta",
         "alpha_score", "trading_cost_bps", "net_alpha_after_cost_bps",
@@ -597,6 +1022,10 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
     ]].copy()
     current_positions = target_positions.rename(columns={"current_weight": "weight"})[["signal_date", "ticker", "weight"]]
     top_abs = pd.Series(weights[-1], index=tickers).abs().sort_values(ascending=False).head(10)
+    finite_returns = pd.Series(returns).replace([np.inf, -np.inf], np.nan).dropna()
+    realized_vol_annual = float(finite_returns.std(ddof=1) * np.sqrt(252.0)) if len(finite_returns) >= 2 else np.nan
+    max_drawdown = float(daily["drawdown"].max()) if "drawdown" in daily and daily["drawdown"].notna().any() else 0.0
+    latest_risk = daily.iloc[-1] if not daily.empty else pd.Series(dtype=float)
     risk_summary = {
         "gross_exposure": float(np.abs(weights[-1]).sum()) if len(weights) else 0.0,
         "net_exposure": float(weights[-1].sum()) if len(weights) else 0.0,
@@ -610,6 +1039,17 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
         "beta_estimate": None,
         "expected_turnover": float(turnover[-1]) if len(turnover) else 0.0,
         "realized_turnover": float(turnover[-1]) if len(turnover) else 0.0,
+        "turnover_penalty": float(turnover_penalty[-1]) if len(turnover_penalty) else 0.0,
+        "expected_traded_notional": float(turnover[-1] * 2.0) if len(turnover) else 0.0,
+        "risk_scale": float(latest_risk.get("risk_scale", 1.0)),
+        "vol_scale": float(latest_risk.get("vol_scale", 1.0)),
+        "var_scale": float(latest_risk.get("var_scale", 1.0)),
+        "drawdown_scale": float(latest_risk.get("drawdown_scale", 1.0)),
+        "rolling_volatility_annual": float(latest_risk.get("rolling_volatility_annual", np.nan)),
+        "realized_volatility_annual": realized_vol_annual,
+        "rolling_daily_var": float(latest_risk.get("rolling_daily_var", np.nan)),
+        "current_drawdown": float(latest_risk.get("drawdown", 0.0)),
+        "max_drawdown": max_drawdown,
         "cash": None,
         "leverage": float(np.abs(weights[-1]).sum()) if len(weights) else 0.0,
         "margin_usage": None,
@@ -627,15 +1067,26 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
         "universe_size_after_filters": int(np.isfinite(alpha[-2]).sum()) if len(alpha) > 1 else 0,
         "factor_names": factor_names,
         "model_config": {"forecast_method": cfg.forecast_method, "lookback": cfg.lookback, "ewma_halflife": cfg.ewma_halflife},
-        "backtest_config": asdict(cfg) | {"input_dir": str(cfg.input_dir), "out_dir": str(cfg.out_dir), "daily_bars_path": str(cfg.daily_bars_path) if cfg.daily_bars_path else None, "reports_dir": str(cfg.reports_dir)},
-        "data_source": str(cfg.daily_bars_path) if cfg.daily_bars_path else str(cfg.input_dir),
+        "backtest_config": asdict(cfg) | {
+            "input_dir": str(cfg.input_dir),
+            "out_dir": str(cfg.out_dir),
+            "daily_bars_path": str(cfg.daily_bars_path) if cfg.daily_bars_path else None,
+            "execution_bars_path": str(exec_bars_path) if exec_bars_path else None,
+            "return_bars_path": str(cfg.daily_bars_path) if cfg.daily_bars_path else None,
+            "reports_dir": str(cfg.reports_dir),
+        },
+        "data_source": str(exec_bars_path) if exec_bars_path else str(cfg.input_dir),
         "input_files": {
             "input_dir": str(cfg.input_dir),
             "daily_bars_path": str(cfg.daily_bars_path) if cfg.daily_bars_path else None,
+            "execution_bars_path": str(exec_bars_path) if exec_bars_path else None,
+            "return_bars_path": str(cfg.daily_bars_path) if cfg.daily_bars_path else None,
             "processed_dates_start": dates[0].date().isoformat() if len(dates) else None,
             "processed_dates_end": dates[-1].date().isoformat() if len(dates) else None,
             "daily_bars_start": bars_start,
             "daily_bars_end": bars_end,
+            "execution_bars_start": exec_bars_start,
+            "execution_bars_end": exec_bars_end,
         },
         "warnings": warnings,
         "data_quality": {
@@ -643,7 +1094,7 @@ def run_close_to_next_open_backtest(cfg: DailyBacktestConfig) -> DailyBacktestRe
             "nan_counts_by_factor": {name: int(np.isnan(X[:, :, i]).sum()) for i, name in enumerate(factor_names)},
             "finite_fraction_by_factor": {name: float(finite_by_factor[i]) for i, name in enumerate(factor_names)},
             "excluded_tickers_latest": int((~tradable[-1]).sum()) if len(tradable) else 0,
-            "point_in_time_universe_warning": "Warn: historical backtest uses the saved pipeline universe; verify it is point-in-time before relying on results.",
+            "point_in_time_universe": pit_stats,
         },
     }
     return DailyBacktestResult(
@@ -737,6 +1188,7 @@ def write_daily_report(result: DailyBacktestResult, report_dir: Path, signal_dat
         "",
         "## Risk / Exposure",
         f"Gross: {result.risk_summary.get('gross_exposure', 0):.4f}; Net: {result.risk_summary.get('net_exposure', 0):.4f}; Long names: {result.risk_summary.get('number_long', 0)}; Short names: {result.risk_summary.get('number_short', 0)}.",
+        f"Risk scale: {result.risk_summary.get('risk_scale', 1):.4f}; Rolling annual volatility: {result.risk_summary.get('rolling_volatility_annual', float('nan')):.4f}; Rolling daily VaR: {result.risk_summary.get('rolling_daily_var', float('nan')):.4f}; Current drawdown: {result.risk_summary.get('current_drawdown', 0):.4f}.",
         "",
         "## Data Quality",
         f"Warnings: {', '.join(result.warnings) if result.warnings else 'none'}. Missing and finite factor coverage are recorded in pipeline_metadata.json.",

@@ -1,0 +1,29 @@
+{
+  "gross_exposure": 0.9753696986607142,
+  "net_exposure": 0.011028180803571423,
+  "long_exposure": 0.49319893973214285,
+  "short_exposure": -0.4821707589285714,
+  "number_long": 157,
+  "number_short": 186,
+  "max_position_weight": 0.004457310267857143,
+  "top_10_position_weights": {
+    "MXL": 0.004457310267857143,
+    "TRAX": -0.004457310267857143,
+    "WDC": 0.004457310267857143,
+    "LQDA": 0.004457310267857143,
+    "TTMI": 0.004457310267857143,
+    "FTRE": 0.004457310267857143,
+    "DGXX": 0.004457310267857143,
+    "PENG": 0.004457310267857143,
+    "ACLS": 0.004457310267857143,
+    "FRMI": -0.004457310267857143
+  },
+  "sector_exposures": {},
+  "beta_estimate": null,
+  "expected_turnover": 0.10919015066964284,
+  "realized_turnover": null,
+  "cash": null,
+  "leverage": 0.9753696986607142,
+  "margin_usage": null,
+  "liquidity_warnings": []
+}

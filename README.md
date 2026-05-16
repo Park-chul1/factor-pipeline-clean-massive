@@ -206,7 +206,7 @@ financials_ttm.parquet        # Point-in-time TTM fields
 pipeline_summary.json         # Metadata and parameters
 ```
 
-Residual diagnostics can be generated from any pipeline output directory with `python scripts/plot_residual_heatmap.py --input-dir data/nasdaq_full --clip-percentile 99.5 --sort-tickers-by coverage --top-tickers 50 --top-events 100`. The script writes `diagnostics/residuals/` under the input directory, including percentile-clipped squared residual heatmaps, daily cross-sectional MSE and valid-count plots, ticker coverage diagnostics, largest residual events and daily MSE spike CSVs, and `residual_summary.json`. Heatmap data keeps all ticker rows unless `--filter-low-coverage` is passed; axis labels are subsampled only to keep the image readable.
+Residual diagnostics can be generated from any pipeline output directory with `python scripts/plot_residual_heatmap.py --input-dir data/nasdaq_full --clip-percentile 99.5 --sort-tickers-by coverage --top-tickers 50 --top-events 100`. The script writes `diagnostics/residuals/` under the input directory, including percentile-clipped signed sqrt-absolute residual heatmaps, daily cross-sectional MSE and valid-count plots, ticker coverage diagnostics, largest residual events and daily MSE spike CSVs, and `residual_summary.json`. Heatmap colors use blue for negative residuals, yellow near zero, and red for positive residuals. Heatmap data keeps all ticker rows unless `--filter-low-coverage` is passed; axis labels are subsampled only to keep the image readable.
 
 ## Data Preprocessing & Bias Controls
 

@@ -18,6 +18,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--input-dir", default=None)
     p.add_argument("--out-dir", default=None)
     p.add_argument("--daily-bars-path", default=None)
+    p.add_argument("--execution-bars-path", default=None)
+    p.add_argument("--start-date", default=None)
+    p.add_argument("--end-date", default=None)
     return p.parse_args()
 
 
@@ -30,6 +33,12 @@ def main() -> None:
         raw["out_dir"] = args.out_dir
     if args.daily_bars_path:
         raw["daily_bars_path"] = args.daily_bars_path
+    if args.execution_bars_path:
+        raw["execution_bars_path"] = args.execution_bars_path
+    if args.start_date:
+        raw["start_date"] = args.start_date
+    if args.end_date:
+        raw["end_date"] = args.end_date
     cfg = config_from_dict(raw)
     result = run_close_to_next_open_backtest(cfg)
     cfg.out_dir.mkdir(parents=True, exist_ok=True)

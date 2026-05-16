@@ -24,6 +24,7 @@ class PaperSubmitConfig:
     transaction_cost_bps: float = 1.0
     slippage_bps: float = 2.0
     min_net_alpha_after_cost_bps: float = 5.0
+    min_price: float = 0.0
     submit_mode: str = "burst"
     submit_pause_seconds: float = 0.05
     post_submit_wait_seconds: float = 5.0
@@ -45,6 +46,10 @@ def load_target_weights(report_dir: Path, cfg: PaperSubmitConfig | None = None) 
         directional_alpha = alpha.where(df["target_weight"].ge(0), -alpha)
         keep = df["target_weight"].abs().le(1e-12) | directional_alpha.ge(threshold)
         df = df[keep].copy()
+    if cfg is not None and cfg.min_price > 0 and "price_flag" in df.columns:
+        price_flag = df["price_flag"].astype(str).str.lower().isin({"true", "1", "yes"})
+        keep = df["target_weight"].abs().le(1e-12) | price_flag
+        df = df[keep].copy()
     weights = (
         df
         .dropna(subset=["ticker", "target_weight"])
@@ -53,6 +58,14 @@ def load_target_weights(report_dir: Path, cfg: PaperSubmitConfig | None = None) 
         .astype(float)
     )
     return weights[weights.abs() > 1e-12].sort_index()
+
+
+def _apply_min_price_to_targets(target_weights: pd.Series, prices: pd.Series, min_price: float) -> pd.Series:
+    if min_price <= 0 or target_weights.empty:
+        return target_weights
+    target_prices = pd.to_numeric(prices.reindex(target_weights.index), errors="coerce")
+    too_low = target_prices.notna() & target_prices.lt(min_price)
+    return target_weights.loc[~too_low].sort_index()
 
 
 def _fallback_prices_from_order_plan(report_dir: Path) -> pd.Series:
@@ -116,6 +129,7 @@ def submit_report_to_ibkr_paper(report_dir: str | Path, cfg: PaperSubmitConfig) 
             prices = broker.get_prices(symbols).combine_first(fallback)
         else:
             prices = fallback.reindex(symbols)
+        target_weights = _apply_min_price_to_targets(target_weights, prices, cfg.min_price)
 
         orders = generate_orders(current_positions, target_weights, prices, equity, live_config)
         safe_orders, risk_rows = apply_risk_checks(orders, live_config, equity, prices)

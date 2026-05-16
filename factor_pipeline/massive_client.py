@@ -133,9 +133,12 @@ def download_nasdaq_tickers(client: MassiveClient, exchange: str = "XNAS", activ
     return df.sort_values("ticker").reset_index(drop=True)
 
 
-def download_grouped_daily(client: MassiveClient, d: date | str) -> pd.DataFrame:
+def download_grouped_daily(client: MassiveClient, d: date | str, adjusted: bool = True) -> pd.DataFrame:
     ds = pd.Timestamp(d).date().isoformat()
-    data = client.get(f"/v2/aggs/grouped/locale/us/market/stocks/{ds}", {"adjusted": "true"})
+    data = client.get(
+        f"/v2/aggs/grouped/locale/us/market/stocks/{ds}",
+        {"adjusted": str(adjusted).lower()},
+    )
     rows = data.get("results", []) or []
     if not rows:
         return pd.DataFrame(columns=["date", "ticker", "open", "high", "low", "close", "volume", "vwap", "transactions"])
@@ -145,10 +148,10 @@ def download_grouped_daily(client: MassiveClient, d: date | str) -> pd.DataFrame
     return df[keep]
 
 
-def download_grouped_daily_range(client: MassiveClient, start: str, end: str) -> pd.DataFrame:
+def download_grouped_daily_range(client: MassiveClient, start: str, end: str, adjusted: bool = True) -> pd.DataFrame:
     frames = []
     for d in pd.date_range(start, end, freq="B"):
-        day = download_grouped_daily(client, d)
+        day = download_grouped_daily(client, d, adjusted=adjusted)
         if not day.empty:
             frames.append(day)
     if not frames:

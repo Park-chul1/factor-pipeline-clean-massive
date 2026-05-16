@@ -11,6 +11,7 @@ from backtests.close_to_next_open_daily import (
     DailyBacktestConfig,
     config_from_dict,
     daily_bars_date_range,
+    execution_bars_path,
     write_residual_heatmap,
     _rank_weights_one_day,
     _safe_git_hash,
@@ -55,13 +56,14 @@ def _assert_signal_date_available(cfg: DailyBacktestConfig, signal_date: pd.Time
             f"requested={signal_date.date()} processed_end={processed_end.date()} input_dir={cfg.input_dir}"
         )
 
-    bars_start, bars_end = daily_bars_date_range(cfg.daily_bars_path)
+    market_bars_path = execution_bars_path(cfg)
+    bars_start, bars_end = daily_bars_date_range(market_bars_path)
     if bars_end is None:
-        raise RuntimeError(f"Refusing after-close job: daily_bars_path is missing or empty: {cfg.daily_bars_path}")
+        raise RuntimeError(f"Refusing after-close job: execution/daily bars path is missing or empty: {market_bars_path}")
     if pd.Timestamp(bars_end) < signal_date:
         raise RuntimeError(
             f"Refusing after-close job: daily bars do not include requested signal_date close. "
-            f"requested={signal_date.date()} bars_range={bars_start}..{bars_end} daily_bars_path={cfg.daily_bars_path}"
+            f"requested={signal_date.date()} bars_range={bars_start}..{bars_end} bars_path={market_bars_path}"
         )
 
 
@@ -128,6 +130,7 @@ def _build_one_day_rankings(
     target: np.ndarray,
     current: np.ndarray,
     dollar_volume: np.ndarray,
+    price: np.ndarray,
     cfg: DailyBacktestConfig,
 ) -> pd.DataFrame:
     contrib = np.where(np.isfinite(X_t), X_t, 0.0) * np.where(np.isfinite(f_hat), f_hat, 0.0)
@@ -145,6 +148,7 @@ def _build_one_day_rankings(
             side = "BUY" if current[i] >= 0 else "COVER"
         elif delta < -1e-12:
             side = "SHORT" if target[i] < 0 else "SELL"
+        price_ok = bool(cfg.min_price <= 0 or (np.isfinite(price[i]) and price[i] >= cfg.min_price))
         liquidity_ok = bool(np.isfinite(dollar_volume[i]) and dollar_volume[i] >= cfg.min_dollar_volume)
         risk_ok = bool(abs(target[i]) <= cfg.max_position_weight + 1e-12)
         trading_cost_bps = cfg.transaction_cost_bps + cfg.slippage_bps
@@ -167,7 +171,8 @@ def _build_one_day_rankings(
                 f"{side} because predicted alpha is in the {direction}. "
                 f"Net alpha after estimated {trading_cost_bps:.1f} bps trading cost is {net_alpha_after_cost_bps:.2f} bps "
                 f"versus threshold {cfg.min_net_alpha_after_cost_bps:.2f} bps. "
-                f"Main contributors were {main}. Liquidity filter {'passed' if liquidity_ok else 'failed'}."
+                f"Main contributors were {main}. Price filter {'passed' if price_ok else 'failed'}; "
+                f"liquidity filter {'passed' if liquidity_ok else 'failed'}."
             )
         rows.append({
             "signal_date": signal_date,
@@ -192,6 +197,7 @@ def _build_one_day_rankings(
             "factor_contributions": json.dumps({factor_names[k]: float(c[k]) for k in range(len(factor_names)) if np.isfinite(c[k])}),
             "residual_score": np.nan,
             "outlier_flag": False,
+            "price_flag": price_ok,
             "liquidity_flag": liquidity_ok,
             "risk_flag": risk_ok,
             "reason_text": reason,
@@ -378,6 +384,9 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
     f = np.load(input_dir / "factor_returns.npy")
     r = np.load(input_dir / "r.npy", mmap_mode="r") if (input_dir / "r.npy").exists() else None
     tradable = np.load(input_dir / "tradable_mask.npy", mmap_mode="r")
+    market_bars_path = execution_bars_path(cfg)
+    if market_bars_path is None:
+        raise RuntimeError("After-close job requires daily_bars_path or execution_bars_path for price and liquidity filters.")
     f_pred = predict_factor_returns(
         f[: t + 1],
         method=cfg.forecast_method,
@@ -387,30 +396,49 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
     )
     f_hat = f_pred[t]
     X_t = np.asarray(X[t], dtype=float)
-    bars = _load_signal_bars(Path(cfg.daily_bars_path), signal_date, tickers)
+    bars = _load_signal_bars(Path(market_bars_path), signal_date, tickers)
     close = pd.to_numeric(bars.get("close", pd.Series(index=tickers, dtype=float)), errors="coerce").to_numpy(dtype=float)
     volume = pd.to_numeric(bars.get("volume", pd.Series(index=tickers, dtype=float)), errors="coerce").to_numpy(dtype=float)
     dollar_volume = close * volume
     alpha = np.where(np.isfinite(X_t), X_t, 0.0) @ np.where(np.isfinite(f_hat), f_hat, 0.0)
     if not np.isfinite(f_hat).any():
         alpha[:] = np.nan
-    target, filter_info = _rank_weights_one_day(alpha, np.asarray(tradable[t], dtype=bool), dollar_volume, cfg)
+    target, filter_info = _rank_weights_one_day(
+        alpha,
+        np.asarray(tradable[t], dtype=bool),
+        dollar_volume,
+        cfg,
+        price=close,
+    )
 
     if t > 0:
         prev_hat = f_pred[t - 1] if t - 1 < len(f_pred) else np.full_like(f_hat, np.nan)
         prev_alpha = np.asarray(X[t - 1], dtype=float) @ np.where(np.isfinite(prev_hat), prev_hat, 0.0)
-        prev_bars = _load_signal_bars(Path(cfg.daily_bars_path), dates[t - 1], tickers)
+        prev_bars = _load_signal_bars(Path(market_bars_path), dates[t - 1], tickers)
         prev_dv = (
             pd.to_numeric(prev_bars.get("close", pd.Series(index=tickers, dtype=float)), errors="coerce").to_numpy(dtype=float)
             * pd.to_numeric(prev_bars.get("volume", pd.Series(index=tickers, dtype=float)), errors="coerce").to_numpy(dtype=float)
         )
-        current, _ = _rank_weights_one_day(prev_alpha, np.asarray(tradable[t - 1], dtype=bool), prev_dv, cfg)
+        prev_close = pd.to_numeric(
+            prev_bars.get("close", pd.Series(index=tickers, dtype=float)),
+            errors="coerce",
+        ).to_numpy(dtype=float)
+        current, _ = _rank_weights_one_day(
+            prev_alpha,
+            np.asarray(tradable[t - 1], dtype=bool),
+            prev_dv,
+            cfg,
+            price=prev_close,
+        )
     else:
         current = np.zeros_like(target)
     if cfg.turnover_cap is not None:
         turnover = 0.5 * float(np.abs(target - current).sum())
         if turnover > cfg.turnover_cap and turnover > 0:
             target = current + (target - current) * (cfg.turnover_cap / turnover)
+    if cfg.min_price > 0:
+        price_ok = np.isfinite(close) & (close >= cfg.min_price)
+        target[~price_ok] = 0.0
 
     alpha_rankings = _build_one_day_rankings(
         signal_date,
@@ -423,6 +451,7 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
         target,
         current,
         dollar_volume,
+        close,
         cfg,
     )
     alpha_rankings["signal_price"] = close
@@ -435,7 +464,7 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
         "signal_date", "ticker", "target_weight", "current_weight", "order_weight_delta",
         "alpha_score", "trading_cost_bps", "net_alpha_after_cost_bps",
         "min_net_alpha_after_cost_bps", "passes_cost_threshold",
-        "alpha_rank", "quantile_bucket", "reason_text",
+        "alpha_rank", "quantile_bucket", "price_flag", "reason_text",
     ]].copy()
     current_positions = target_positions.rename(columns={"current_weight": "weight"})[["signal_date", "ticker", "weight"]]
     factor_report = _build_factor_report(dates, t, factor_names, f, f_hat)
@@ -466,6 +495,7 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
                 "average_volatility": np.nan,
                 "long_threshold_alpha": filter_info.get("long_threshold_alpha"),
                 "short_threshold_alpha": filter_info.get("short_threshold_alpha"),
+                "filtered_out_price": filter_info.get("filtered_price"),
                 "filtered_out_liquidity": filter_info.get("filtered_liquidity"),
                 "filtered_out_missing_data": filter_info.get("filtered_missing_or_untradable"),
                 "filtered_out_alpha_threshold": filter_info.get("filtered_alpha_threshold"),
@@ -491,6 +521,9 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
         "close_price": orders["signal_price"] if not orders.empty else pd.Series(dtype=float),
         "slippage_bps": cfg.slippage_bps,
         "transaction_cost": (orders["order_weight_delta"].abs() * cfg.initial_equity * cfg.transaction_cost_bps / 10_000.0) if not orders.empty else pd.Series(dtype=float),
+        "estimated_slippage_cost": (orders["order_weight_delta"].abs() * cfg.initial_equity * cfg.slippage_bps / 10_000.0) if not orders.empty else pd.Series(dtype=float),
+        "estimated_total_cost": (orders["order_weight_delta"].abs() * cfg.initial_equity * (cfg.transaction_cost_bps + cfg.slippage_bps) / 10_000.0) if not orders.empty else pd.Series(dtype=float),
+        "cost_basis": "order_notional",
         "order_status": "planned",
         "rejected_reason": "",
     })
@@ -516,6 +549,7 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
     finite_by_factor = np.isfinite(X_t).mean(axis=0)
     warnings = ["Historical universe is from saved processed files; verify point-in-time membership before relying on historical comparisons."]
     bars_start, bars_end = daily_bars_date_range(cfg.daily_bars_path)
+    exec_bars_start, exec_bars_end = daily_bars_date_range(market_bars_path)
     metadata = {
         "run_timestamp": datetime.now(timezone.utc).isoformat(),
         "git_commit_hash": _safe_git_hash(),
@@ -529,15 +563,25 @@ def run_after_close_signal_once(date: str | pd.Timestamp, cfg: DailyBacktestConf
         "universe_size_after_filters": int(np.isfinite(alpha).sum()),
         "factor_names": factor_names,
         "model_config": {"forecast_method": cfg.forecast_method, "lookback": cfg.lookback, "ewma_halflife": cfg.ewma_halflife},
-        "backtest_config": {**cfg.__dict__, "input_dir": str(cfg.input_dir), "out_dir": str(cfg.out_dir), "daily_bars_path": str(cfg.daily_bars_path), "reports_dir": str(cfg.reports_dir)},
-        "data_source": str(cfg.daily_bars_path),
+        "backtest_config": {
+            **cfg.__dict__,
+            "input_dir": str(cfg.input_dir),
+            "out_dir": str(cfg.out_dir),
+            "daily_bars_path": str(cfg.daily_bars_path),
+            "execution_bars_path": str(market_bars_path),
+            "reports_dir": str(cfg.reports_dir),
+        },
+        "data_source": str(market_bars_path),
         "input_files": {
             "input_dir": str(cfg.input_dir),
             "daily_bars_path": str(cfg.daily_bars_path),
+            "execution_bars_path": str(market_bars_path),
             "processed_dates_start": dates[0].date().isoformat(),
             "processed_dates_end": dates[-1].date().isoformat(),
             "daily_bars_start": bars_start,
             "daily_bars_end": bars_end,
+            "execution_bars_start": exec_bars_start,
+            "execution_bars_end": exec_bars_end,
         },
         "warnings": warnings,
         "data_quality": {

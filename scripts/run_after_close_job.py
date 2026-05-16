@@ -27,6 +27,7 @@ def main() -> None:
     p.add_argument("--paper-transaction-cost-bps", type=float, default=1.0)
     p.add_argument("--paper-slippage-bps", type=float, default=2.0)
     p.add_argument("--paper-min-net-alpha-after-cost-bps", type=float, default=5.0)
+    p.add_argument("--paper-min-price", type=float, default=0.0, help="Drop target positions whose order price is below this threshold; exits are still allowed")
     p.add_argument("--paper-submit-mode", choices=["burst", "sequential"], default="burst")
     p.add_argument("--paper-submit-pause-seconds", type=float, default=0.05)
     p.add_argument("--paper-post-submit-wait-seconds", type=float, default=5.0)
@@ -47,6 +48,7 @@ def main() -> None:
                 transaction_cost_bps=args.paper_transaction_cost_bps,
                 slippage_bps=args.paper_slippage_bps,
                 min_net_alpha_after_cost_bps=args.paper_min_net_alpha_after_cost_bps,
+                min_price=args.paper_min_price,
                 submit_mode=args.paper_submit_mode,
                 submit_pause_seconds=args.paper_submit_pause_seconds,
                 post_submit_wait_seconds=args.paper_post_submit_wait_seconds,
